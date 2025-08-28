@@ -69,7 +69,7 @@ export const DashboardPage = () => {
         ref={scrollRef}
         className="flex-1 overflow-y-auto overflow-x-auto main-content-scroll smooth-scroll scroll-fade scrollable"
       >
-        <div className="py-14 px-16  min-h-full">
+        <div className="py-4 px-16  min-h-full">
           {!showTable ? (
             /* Grid View */
             <div
@@ -89,7 +89,7 @@ export const DashboardPage = () => {
             /* Table View */
             <div>
               {/* Back to Grid Button */}
-              <div className="mb-6 flex items-center gap-4">
+              <div className="mb-3 flex items-center gap-4">
                 <button
                   onClick={handleBackToGrid}
                   className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
