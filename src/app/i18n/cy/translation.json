@@ -1,0 +1,31 @@
+{
+  "send": "Anfon",
+  "cancel": "Diddymu",
+  "back": "Yn ôl",
+  "topOperators": "Gweithredwyr gorau",
+  "lastMonth": "Mis diwethaf",
+  "currentMonth": "Mis cyfredol",
+  "selectMonth": "Dewis mis",
+  "seeAll": "Gweld y cyfan",
+  "rank": "Safle",
+  "point": "Pwynt",
+  "points": "Pwyntiau",
+  "language": "Iaith",
+  "loading": "Llwytho cyfieithiadau...",
+  "languagesSupported": "iaith yn cael eu cefnogi",
+  "changeLanguage": "Newid iaith",
+  "months": {
+    "january": "Ionawr",
+    "february": "Chwefror",
+    "march": "Mawrth",
+    "april": "Ebrill",
+    "may": "Mai",
+    "june": "Mehefin",
+    "july": "Gorffennaf",
+    "august": "Awst",
+    "september": "Medi",
+    "october": "Hydref",
+    "november": "Tachwedd",
+    "december": "Rhagfyr"
+  }
+}
