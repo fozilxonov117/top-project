@@ -87,7 +87,13 @@ export const DashboardPage = () => {
             </div>
           ) : (
             /* Table View */
-            <div>
+            <div 
+            style={{
+                width: '100%',
+                maxWidth: '1792px',
+                minWidth: '1792px',
+                margin: '0 auto'
+              }}>
               {/* Back to Grid Button */}
               <div className="mb-3 flex items-center gap-4">
                 <button

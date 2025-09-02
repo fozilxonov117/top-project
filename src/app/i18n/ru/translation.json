@@ -19,6 +19,7 @@
   "count": "Количество",
   "kpi": "КПИ", 
   "average": "Средний",
+  "resetRanking": "Сброс",
   "groupNotFound": "Группа не найдена",
   "backToDashboard": "Вернуться на главную",
   "months": {

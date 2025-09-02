@@ -26,6 +26,11 @@ export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
     }
   };
 
+  const resetToDefaultRanking = () => {
+    setSortField('rank');
+    setSortDirection('asc');
+  };
+
   const sortedOperators = [...operators].sort((a, b) => {
     let aValue: string | number;
     let bValue: string | number;
@@ -77,8 +82,8 @@ export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
       {/* Table Header */}
       <div className="bg-[#ffffff12] border-b border-white/10">
         <div className="flex px-6 py-2 text-sm font-semibold text-gray-300">
-          {/* Left side - Operator Name (takes up more space) */}
-          <div className="flex-1">
+          {/* Left side - Operator Name and Reset Button */}
+          <div className="flex-1 flex items-center gap-4">
             <button
               onClick={() => handleSort('name')}
               className="text-left hover:text-white transition-colors flex items-center gap-1"
@@ -86,10 +91,30 @@ export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
               {t('operator')}
               <span className="text-xs">{getSortIcon('name')}</span>
             </button>
+            
+            {/* Reset Button - Right side of left section */}
+            {(sortField !== 'rank' || sortDirection !== 'asc') && (
+              <button
+                onClick={resetToDefaultRanking}
+                className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 font-medium"
+              >
+                <span>↺</span>
+                {t('resetRanking') || 'Reset'}
+              </button>
+            )}
           </div>
           
-          {/* Right side - Metrics (compact spacing) */}
-          <div className="flex gap-8">
+          {/* Right side - Metrics */}
+          <div className="flex gap-8 items-center">
+            <div className="text-center text-gray-300 text-sm font-semibold min-w-[60px]">
+              {/* Empty header for medal count column */}
+            </div>
+            <div className="text-center text-gray-300 text-sm font-semibold min-w-[360px]">
+              {/* Empty header for stock chart column */}
+            </div>
+            <div className="text-center text-gray-300 text-sm font-semibold min-w-[40px]">
+              {/* Empty header for rank change column */}
+            </div>
             <button
               onClick={() => handleSort('count')}
               className="text-center hover:text-white transition-colors flex items-center justify-center gap-1 min-w-[80px]"

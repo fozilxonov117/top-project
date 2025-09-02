@@ -1,7 +1,8 @@
 import type { Operator } from 'shared/types';
 import { GoldMedal, SilverMedal, BronzeMedal } from 'shared/ui/components/MedalIcons';
+import { StockChart } from 'shared/ui/components/StockChart';
 import { MedalCounter } from 'features/operator-ranking';
-import { cn } from 'shared/lib';
+import { cn, analyzeRankingHistory } from 'shared/lib';
 
 interface OperatorRowProps {
   operator: Operator;
@@ -39,12 +40,26 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
     return '';
   };
 
+  const getStockTrend = () => {
+    if (!operator.rankChange || operator.rankChange === 0) return 'neutral';
+    // rankChange > 0 means position IMPROVED (better rank), so UP trend = GREEN
+    // rankChange < 0 means position DECLINED (worse rank), so DOWN trend = RED
+    return operator.rankChange > 0 ? 'up' : 'down';
+  };
+
+  // Check if operator ever reached top-3 during the 22-day period
+  const rankingHistory = analyzeRankingHistory(
+    operator.rank, 
+    operator.rank + (operator.rankChange || 0), 
+    getStockTrend()
+  );
+
   return (
     <div className={cn(
       'flex px-6 py-3 hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0',
       getRankRowStyle()
     )}>
-      {/* Left side - Operator Info with Rank (takes up more space) */}
+      {/* Left side - Operator Name and Rank Badge/Medal */}
       <div className="flex items-center gap-3 flex-1">
         {/* Rank Circle/Medal */}
         <div className="flex items-center justify-center">
@@ -58,10 +73,32 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
           className="h-12 w-12 rounded-full object-cover operator-avatar border-2 border-white/20"
         />
         
-        {/* Operator Name and Rank Change in one line */}
-        <div className="flex items-center gap-2">
-          <div className="font-medium text-white">{operator.name}</div>
-          {operator.rankChange && (
+        {/* Operator Name */}
+        <div className="font-medium text-lg text-white">{operator.name}</div>
+      </div>
+
+      {/* Right side - Medal Count, Stock Chart, Rank Change, and Metrics (separate columns) */}
+      <div className="flex gap-8">
+        {/* Medal Count Column - Show for operators who EVER reached top-3 in 22 days */}
+        <div className="flex items-center justify-center min-w-[60px]">
+          {rankingHistory.everReachedTop3 && (
+            <MedalCounter count={rankingHistory.daysInTop3} />
+          )}
+        </div>
+
+        {/* Stock Chart Column */}
+        <div className="flex items-center justify-end min-w-[90px]">
+          <StockChart 
+            trend={getStockTrend()} 
+            className="" 
+            currentRank={operator.rank}
+            previousRank={operator.rank + (operator.rankChange || 0)}
+          />
+        </div>
+
+        {/* Rank Change Indicator Column */}
+        <div className="flex items-center justify-center min-w-[40px]">
+          {operator.rankChange !== undefined && operator.rankChange !== null && operator.rankChange !== 0 && (
             <div className={cn(
               'text-xs flex items-center gap-1 font-medium',
               operator.rankChange > 0 ? 'text-green-400' : 'text-red-400'
@@ -70,18 +107,15 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
               <span>{Math.abs(operator.rankChange)}</span>
             </div>
           )}
-          {/* Show medal count for top 3 */}
-          {operator.rank <= 3 && operator.topMedalCount && operator.topMedalCount > 0 && (
-            <div className="ml-2">
-              <MedalCounter count={operator.topMedalCount} />
+          {/* Neutral indicator for no change */}
+          {(operator.rankChange === undefined || operator.rankChange === null || operator.rankChange === 0) && (
+            <div className="text-xs flex items-center gap-1 font-medium text-gray-400">
+              <span>−</span>
             </div>
           )}
         </div>
-      </div>
 
-      {/* Right side - Metrics (compact spacing) */}
-      <div className="flex gap-8">
-        {/* Count */}
+        {/* Count Column */}
         <div className="flex items-center justify-center min-w-[80px]">
           <span className="text-white font-medium">{operator.count}</span>
         </div>
@@ -98,7 +132,7 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
 
         {/* Points */}
         <div className="flex items-center justify-center min-w-[80px]">
-          <span className="text-green-400 font-bold text-lg bg-green-500/20 px-3 py-1 rounded-lg">
+          <span className="text-green-400 font-bold text-base bg-green-500/20 px-3 py-1 rounded-lg">
             {operator.points}
           </span>
         </div>

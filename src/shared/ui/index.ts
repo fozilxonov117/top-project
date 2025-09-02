@@ -9,4 +9,5 @@ export { TutorialButton } from './components/TutorialButton';
 export { LanguageSwitcher } from './components/LanguageSwitcher';
 export { LanguageStatus } from './components/LanguageStatus';
 export { BackToTop } from './components/BackToTop';
+export { StockChart } from './components/StockChart';
 export { GoldMedal, SilverMedal, BronzeMedal } from './components/MedalIcons';

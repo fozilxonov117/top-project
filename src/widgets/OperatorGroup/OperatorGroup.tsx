@@ -24,7 +24,7 @@ export const OperatorGroup = ({ group, onSeeAll, className }: OperatorGroupProps
       className={cn('rounded-lg bg-[#ffffff24] hover:scale-102 transition-transform duration-300 pt-3 pb-3 px-4 rounded-xl shadow-lg hover:shadow-xl cursor-pointer', className)}
       onClick={onSeeAll}
       style={{
-        boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px'
+        boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px'
       }}
     >
       {/* Header */}
