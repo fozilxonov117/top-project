@@ -1,4 +1,5 @@
 import { cn } from 'shared/lib';
+import { useState } from 'react';
 
 interface StockChartProps {
   trend: 'up' | 'down' | 'neutral';
@@ -8,80 +9,69 @@ interface StockChartProps {
 }
 
 export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8 }: StockChartProps) => {
-  // Generate 22-day rank progression with dramatic 3-4 position movements
+  const [hoveredPoint, setHoveredPoint] = useState<{x: number, y: number, rank: number, day: number} | null>(null);
+  // Generate 23-day rank progression data
   const generateRankData = () => {
-    const width = 80; // Slightly wider to accommodate 22 days
-    const height = 30; // Taller for better midline visibility
-    const days = 22;
-    const data: Array<{x: number, y: number, rank: number, color: string}> = [];
+    const days = 23;
+    const width = 150; // Enhanced width for 23 days
+    const height = 35; // Enhanced height
+    const data: Array<{x: number, y: number, rank: number, color: string, day: number}> = [];
     
-    // Start from previous rank and progress to current rank
+    // Start from previous rank and ENSURE we end at exact current rank
     const startRank = previousRank;
-    const endRank = currentRank;
+    const endRank = currentRank; // This MUST be the final point
     const totalChange = endRank - startRank;
     
     for (let day = 0; day < days; day++) {
-      const x = 2 + (day / (days - 1)) * (width - 4);
+      const x = 15 + (day / (days - 1)) * (width - 30); // Account for margins
       
-      // Calculate base rank progression with DRAMATIC movements (3-4 positions)
-      const progressRatio = day / (days - 1);
-      let dayRank = startRank + (totalChange * progressRatio);
+      let dayRank: number;
       
-      // Add LARGE fluctuations to simulate 3-4 position moves
-      const bigVolatility = Math.sin(day * 0.6) * 3.5 + Math.cos(day * 0.3) * 2.8; // Large swings
-      const trendWave = Math.sin(day * 0.8) * 2.5; // Additional trend waves
-      
-      if (trend === 'up') {
-        // Strong improving trend with big swings
-        dayRank += bigVolatility;
-        // Create dramatic improvement phases
-        if (day >= 5 && day <= 8) {
-          dayRank -= 4; // Big jump up (better rank = lower number)
-        }
-        if (day >= 12 && day <= 15) {
-          dayRank -= 3; // Another improvement wave
-        }
-        if (day >= 18 && day <= 20) {
-          dayRank += 2; // Small pullback
-        }
-      } else if (trend === 'down') {
-        // Strong declining trend with big drops
-        dayRank += bigVolatility;
-        // Create dramatic decline phases  
-        if (day >= 6 && day <= 9) {
-          dayRank += 4; // Big drop (worse rank = higher number)
-        }
-        if (day >= 13 && day <= 16) {
-          dayRank += 3; // Another decline wave
-        }
-        if (day >= 19 && day <= 21) {
-          dayRank -= 1.5; // Small recovery
-        }
+      // CRITICAL: Ensure the LAST day (day 22) is EXACTLY the current rank
+      if (day === days - 1) {
+        dayRank = currentRank; // Force exact current position
       } else {
-        // Neutral with dramatic swings around current position
-        dayRank = currentRank + bigVolatility + trendWave;
+        // Calculate base rank progression with movements
+        const progressRatio = day / (days - 1);
+        dayRank = startRank + (totalChange * progressRatio);
         
-        // Create crossing patterns for testing
-        if (day >= 4 && day <= 7) {
-          dayRank += currentRank < 10 ? 3 : -3; // Move 3 positions
+        // Add more realistic fluctuations for position tracking
+        const volatility = Math.sin(day * 0.6) * 2.5 + Math.cos(day * 0.3) * 1.8;
+        const trendWave = Math.sin(day * 0.8) * 1.5;
+        
+        if (trend === 'up') {
+          dayRank += volatility;
+          // Simulate temporary setbacks during improvement
+          if (day >= 5 && day <= 8) dayRank += 3; // Temporary decline
+          if (day >= 12 && day <= 15) dayRank += 2;
+          if (day >= 18 && day <= 20) dayRank -= 1; // Final push
+        } else if (trend === 'down') {
+          dayRank += volatility;
+          // Simulate temporary improvements during decline
+          if (day >= 6 && day <= 9) dayRank -= 2; // Temporary improvement
+          if (day >= 13 && day <= 16) dayRank -= 1;
+          if (day >= 19 && day <= 21) dayRank += 2.5; // Final decline
+        } else {
+          dayRank = currentRank + volatility + trendWave;
         }
-        if (day >= 11 && day <= 14) {
-          dayRank += currentRank < 10 ? -2.5 : 2.5; // Move back 2-3 positions
-        }
-        if (day >= 17 && day <= 20) {
-          dayRank += currentRank < 10 ? 2 : -2; // Final movement
-        }
+        
+        // Constrain ranks to realistic range (1-25) but allow final adjustment
+        dayRank = Math.max(1, Math.min(25, dayRank));
       }
       
-      // Constrain ranks to realistic range but allow bigger swings (1-30)
-      dayRank = Math.max(1, Math.min(30, dayRank));
+      // Convert rank to Y position with 0.5 cell spacing (10 positions in 5 cells)
+      // Positions 1-2 = cell 1, positions 3-4 = cell 2, etc.
+      const cellPosition = Math.ceil(Math.min(dayRank, 10) / 2); // Groups: 1-2, 3-4, 5-6, 7-8, 9-10
+      const midlinePosition = 0.83; // Midline at bottom for top 10 (5 cells)
       
-      // Convert rank to Y position with midline at bottom for more upward space
-      // Midline at rank 10.5 should be near bottom (80% down from top)
-      const midlinePosition = 0.8; // 80% down from top gives more space above
-      const y = dayRank <= 10.5 
-        ? 2 + ((dayRank - 1) / 9.5) * (height * midlinePosition - 2) // Top 80% for ranks 1-10
-        : (height * midlinePosition) + ((dayRank - 10.5) / 19.5) * (height * (1 - midlinePosition) - 2); // Bottom 20% for ranks 11-30
+      let y;
+      if (dayRank <= 10) {
+        // Top 10: Use 5 cells (positions 1-10 mapped to cells 1-5)
+        y = 3 + ((cellPosition - 1) / 5) * (height * midlinePosition - 3);
+      } else {
+        // Below top 10: compressed space
+        y = (height * midlinePosition) + ((dayRank - 10) / 15) * (height * (1 - midlinePosition) - 3);
+      }
       
       // Determine color based on movement and top-10 status
       const isInTop10 = dayRank <= 10;
@@ -92,65 +82,109 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
         const wasInTop10 = prevRank <= 10;
         const rankChange = dayRank - prevRank;
         
-        // Strong color coding for dramatic movements
+        // Enhanced color coding for movements
         if (isInTop10 && !wasInTop10) {
           color = '#00ff88'; // Bright green - entered top-10
         } else if (!isInTop10 && wasInTop10) {
           color = '#ff3366'; // Bright red - left top-10
         } else if (Math.abs(rankChange) >= 2) {
-          // Big movements (2+ positions)
-          color = rankChange < 0 ? '#00ff88' : '#ff3366'; // Green for improvement, red for decline
+          color = rankChange < 0 ? '#44ff66' : '#ff4466'; // Green for improvement, red for decline
         } else if (Math.abs(rankChange) >= 1) {
-          // Medium movements (1+ positions)
-          color = rankChange < 0 ? '#66ff88' : '#ff6666'; // Lighter colors
+          color = rankChange < 0 ? '#66ff88' : '#ff6666'; // Lighter colors for smaller changes
         } else {
-          // Small movements
-          color = isInTop10 ? '#44ff44' : '#888888';
+          color = isInTop10 ? '#88ff88' : '#888888'; // Steady state colors
         }
       } else {
-        color = isInTop10 ? '#00ff88' : '#ff3366';
+        color = isInTop10 ? '#00ff88' : '#ff6666';
       }
       
-      data.push({ x, y, rank: dayRank, color });
+      data.push({ x, y, rank: dayRank, color, day });
     }
     
     return data;
   };
 
   const rankData = generateRankData();
-  
-  // Calculate midline position at bottom (80% down from top) for rank 10.5
-  const midlineY = 30 * 0.8; // 80% down from top of 30px height
 
   return (
     <div className={cn('flex items-center justify-center', className)}>
-      <div className="bg-[#0000001f] rounded-sm p-1 border border-gray-800/50">
-        <svg width="80" height="30" className="overflow-visible">
+      <div className={cn(
+        'bg-[#0000001f] rounded-sm p-1 border transition-all duration-300',
+        trend === 'up' ? 'border-green-500/50 shadow-green-500/20 shadow-sm' :
+        trend === 'down' ? 'border-red-500/50 shadow-red-500/20 shadow-sm' :
+        'border-gray-800/50'
+      )}>
+        <svg width="150" height="35" className="overflow-visible">
           {/* Background */}
-          <rect width="80" height="30" fill="#ffffff0e" rx="2" />
+          <rect width="150" height="35" fill="#ffffff0e" rx="2" />
           
-          {/* Top-10 boundary midline - positioned at bottom for more upward space */}
+          {/* Position labels on the left (1-10) */}
+          {Array.from({ length: 5 }, (_, i) => {
+            const position1 = i * 2 + 1;  // 1, 3, 5, 7, 9
+            const position2 = i * 2 + 2;  // 2, 4, 6, 8, 10
+            const y = 3 + (i / 5) * (35 * 0.83 - 3);
+            
+            return (
+              <g key={`positions-${i}`}>
+                <text
+                  x={2}
+                  y={y + 2}
+                  fontSize="6"
+                  fill="#ffffff88"
+                  fontFamily="monospace"
+                  fontWeight="bold"
+                >
+                  {position1}
+                </text>
+                <text
+                  x={8}
+                  y={y + 2}
+                  fontSize="6"
+                  fill="#ffffff66"
+                  fontFamily="monospace"
+                >
+                  {position2}
+                </text>
+              </g>
+            );
+          })}
+          
+          {/* Grid lines for 5 cells (0.5 spacing for 10 positions) */}
+          {Array.from({ length: 6 }, (_, i) => (
+            <line
+              key={`grid-${i}`}
+              x1={15}
+              y1={3 + (i / 5) * (35 * 0.83 - 3)}
+              x2={148}
+              y2={3 + (i / 5) * (35 * 0.83 - 3)}
+              stroke="#ffffff08"
+              strokeWidth="0.3"
+            />
+          ))}
+          
+          {/* Top-10 boundary line */}
           <line
-            x1="2"
-            y1={midlineY}
-            x2="78"
-            y2={midlineY}
+            x1={15}
+            y1={35 * 0.83}
+            x2={148}
+            y2={35 * 0.83}
             stroke="#ffff00"
-            strokeWidth="0.8"
-            strokeDasharray="2,1"
+            strokeWidth="1"
+            strokeDasharray="3,2"
             opacity="0.8"
           />
           
-          {/* Label for midline */}
+          {/* TOP 10 label */}
           <text
-            x="4"
-            y={midlineY - 2}
+            x={17}
+            y={35 * 0.83 - 2}
             fontSize="6"
             fill="#ffff00"
-            opacity="0.7"
+            opacity="0.8"
             fontFamily="monospace"
+            fontWeight="bold"
           >
-            Top 10
+            TOP 10
           </text>
           
           {/* Multi-colored line segments */}
@@ -164,44 +198,255 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                 x2={point.x}
                 y2={point.y}
                 stroke={point.color}
-                strokeWidth="1.5"
+                strokeWidth="2"
                 strokeLinecap="round"
               />
             );
           })}
           
-          {/* Data points for boundary crossings */}
-          {rankData.map((point, index) => {
-            if (index === 0) return null;
-            
-            const prevPoint = rankData[index - 1];
-            const crossedMidline = (prevPoint.rank <= 10) !== (point.rank <= 10);
-            
-            if (crossedMidline) {
-              return (
-                <circle
-                  key={index}
-                  cx={point.x}
-                  cy={point.y}
-                  r="1.5"
-                  fill={point.color}
-                  stroke="#000"
-                  strokeWidth="0.5"
+          {/* Interactive hover points for precise position tracking */}
+          {rankData.map((point, index) => (
+            <g key={`hover-point-${index}`}>
+              {/* Invisible large circle for easier hovering */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="6"
+                fill="transparent"
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredPoint(point)}
+                onMouseLeave={() => setHoveredPoint(null)}
+              />
+              
+              {/* Small visible dot that shows on hover */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="1.5"
+                fill={point.color}
+                stroke="#ffffff"
+                strokeWidth="0.5"
+                opacity="0.4"
+                className="hover:opacity-100 hover:r-3 transition-all duration-200 pointer-events-none"
+              />
+            </g>
+          ))}
+          
+          {/* Tooltip for hovered point */}
+          {hoveredPoint && (
+            <g>
+              {/* Tooltip background - smart positioning */}
+              {(() => {
+                const tooltipX = hoveredPoint.x > 125 ? hoveredPoint.x - 50 : hoveredPoint.x - 25;
+                const tooltipY = hoveredPoint.y < 20 ? hoveredPoint.y + 5 : hoveredPoint.y - 25;
+                
+                return (
+                  <>
+                    <rect
+                      x={tooltipX}
+                      y={tooltipY}
+                      width="50"
+                      height="20"
+                      fill="#000000"
+                      stroke="#ffff00"
+                      strokeWidth="1"
+                      rx="3"
+                      opacity="0.95"
+                    />
+                    {/* Tooltip text */}
+                    <text
+                      x={tooltipX + 25}
+                      y={tooltipY + 8}
+                      fontSize="6"
+                      fill="#ffffff"
+                      textAnchor="middle"
+                      fontFamily="monospace"
+                      fontWeight="normal"
+                    >
+                      Day {hoveredPoint.day + 1}
+                    </text>
+                    <text
+                      x={tooltipX + 25}
+                      y={tooltipY + 16}
+                      fontSize="7"
+                      fill="#ffff00"
+                      textAnchor="middle"
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                    >
+                      Position #{Math.round(hoveredPoint.rank)}
+                    </text>
+                  </>
+                );
+              })()}
+              
+              {/* Highlight point */}
+              <circle
+                cx={hoveredPoint.x}
+                cy={hoveredPoint.y}
+                r="3"
+                fill="#ffff00"
+                stroke="#000000"
+                strokeWidth="1"
+                opacity="0.9"
+              />
+              {/* Pulsing ring around hovered point */}
+              <circle
+                cx={hoveredPoint.x}
+                cy={hoveredPoint.y}
+                r="5"
+                fill="none"
+                stroke="#ffff00"
+                strokeWidth="1"
+                opacity="0.5"
+              >
+                <animate
+                  attributeName="r"
+                  values="3;7;3"
+                  dur="1.5s"
+                  repeatCount="indefinite"
                 />
+                <animate
+                  attributeName="opacity"
+                  values="0.5;0.1;0.5"
+                  dur="1.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+          )}
+          
+          {/* Starting position indicator with number */}
+          <g>
+            <circle
+              cx={rankData[0]?.x || 15}
+              cy={rankData[0]?.y || 15}
+              r="3"
+              fill={rankData[0]?.color || '#666666'}
+              stroke="#ffffff"
+              strokeWidth="1.5"
+            />
+            <text
+              x={rankData[0]?.x || 15}
+              y={(rankData[0]?.y || 15) - 6}
+              fontSize="6"
+              fill="#ffffff"
+              textAnchor="middle"
+              fontFamily="monospace"
+              fontWeight="bold"
+            >
+              #{previousRank}
+            </text>
+            {/* "START" label */}
+            <text
+              x={rankData[0]?.x || 15}
+              y={(rankData[0]?.y || 15) + 10}
+              fontSize="4"
+              fill="#888888"
+              textAnchor="middle"
+              fontFamily="monospace"
+              fontWeight="bold"
+              opacity="0.7"
+            >
+              START
+            </text>
+          </g>
+          
+          {/* Current position indicator with number - EXACT current rank */}
+          <g>
+            <circle
+              cx={rankData[rankData.length - 1]?.x || 145}
+              cy={rankData[rankData.length - 1]?.y || 15}
+              r="4"
+              fill={rankData[rankData.length - 1]?.color || '#666666'}
+              stroke="#ffffff"
+              strokeWidth="2"
+              className="drop-shadow-lg"
+            />
+            {/* Enhanced pulsing ring with trend colors */}
+            <circle
+              cx={rankData[rankData.length - 1]?.x || 145}
+              cy={rankData[rankData.length - 1]?.y || 15}
+              r="6"
+              fill="none"
+              stroke={
+                trend === 'up' ? '#00ff88' : 
+                trend === 'down' ? '#ff3366' : 
+                rankData[rankData.length - 1]?.color || '#666666'
+              }
+              strokeWidth="1"
+              opacity="0.5"
+            >
+              <animate
+                attributeName="r"
+                values="4;8;4"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.5;0.1;0.5"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <text
+              x={rankData[rankData.length - 1]?.x || 145}
+              y={(rankData[rankData.length - 1]?.y || 15) - 8}
+              fontSize="7"
+              fill="#ffffff"
+              textAnchor="middle"
+              fontFamily="monospace"
+              fontWeight="bold"
+              className="drop-shadow-sm"
+            >
+              #{currentRank}
+            </text>
+            {/* Enhanced "CURRENT" label with trend colors */}
+            <text
+              x={rankData[rankData.length - 1]?.x || 145}
+              y={(rankData[rankData.length - 1]?.y || 15) + 12}
+              fontSize="4"
+              fill={
+                trend === 'up' ? '#00ff88' : 
+                trend === 'down' ? '#ff3366' : 
+                '#ffff00'
+              }
+              textAnchor="middle"
+              fontFamily="monospace"
+              fontWeight="bold"
+              opacity="0.8"
+            >
+              CURRENT
+            </text>
+          </g>
+          
+          {/* Highlight significant position changes with arrows */}
+          {rankData.map((point, index) => {
+            if (index === 0 || index < 5) return null;
+            
+            const prevPoint = rankData[index - 5]; // Compare with 5 days ago
+            const rankChange = prevPoint.rank - point.rank; // Negative = worse, positive = better
+            
+            if (Math.abs(rankChange) >= 3) { // Show significant changes
+              return (
+                <g key={`change-${index}`}>
+                  <text
+                    x={point.x}
+                    y={point.y + 3}
+                    fontSize="7"
+                    fill={rankChange > 0 ? '#00ff88' : '#ff3366'}
+                    textAnchor="middle"
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                  >
+                    {rankChange > 0 ? '↑' : '↓'}
+                  </text>
+                </g>
               );
             }
             return null;
           })}
-          
-          {/* Current position indicator */}
-          <circle
-            cx={rankData[rankData.length - 1]?.x || 78}
-            cy={rankData[rankData.length - 1]?.y || 15}
-            r="2"
-            fill={rankData[rankData.length - 1]?.color || '#666666'}
-            stroke="#000"
-            strokeWidth="1"
-          />
         </svg>
       </div>
     </div>

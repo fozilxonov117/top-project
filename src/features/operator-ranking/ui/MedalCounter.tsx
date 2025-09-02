@@ -11,7 +11,7 @@ export const MedalCounter = ({ count, className }: MedalCounterProps) => {
   return (
     <div 
       className={cn('flex items-center gap-2 group', className)}
-      title={`Spent ${count} days in top-3 this month`}
+      title={`Spent ${count} days in top-3 during 23 working days`}
     >
       {/* Golden Star Badge with TOP text - similar to reference image */}
       <div className="relative">

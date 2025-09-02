@@ -1,6 +1,6 @@
-// Utility function to analyze 22-day ranking history and determine medal eligibility
+// Utility function to analyze 23-day ranking history and determine medal eligibility
 export const analyzeRankingHistory = (currentRank: number, previousRank: number, trend: 'up' | 'down' | 'neutral') => {
-  const days = 22;
+  const days = 23; // Updated to 23 working days
   let daysInTop3 = 0;
   let everReachedTop3 = false;
   

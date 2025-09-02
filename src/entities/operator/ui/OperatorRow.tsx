@@ -1,6 +1,5 @@
 import type { Operator } from 'shared/types';
-import { GoldMedal, SilverMedal, BronzeMedal } from 'shared/ui/components/MedalIcons';
-import { StockChart } from 'shared/ui/components/StockChart';
+import { GoldMedal, SilverMedal, BronzeMedal, StockChart } from 'shared/ui';
 import { MedalCounter } from 'features/operator-ranking';
 import { cn, analyzeRankingHistory } from 'shared/lib';
 
@@ -42,10 +41,28 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
 
   const getStockTrend = () => {
     if (!operator.rankChange || operator.rankChange === 0) return 'neutral';
-    // rankChange > 0 means position IMPROVED (better rank), so UP trend = GREEN
-    // rankChange < 0 means position DECLINED (worse rank), so DOWN trend = RED
+    // rankChange > 0 means position IMPROVED (better rank, lower number), so UP trend = GREEN
+    // rankChange < 0 means position DECLINED (worse rank, higher number), so DOWN trend = RED
     return operator.rankChange > 0 ? 'up' : 'down';
   };
+
+  // Calculate the actual rank movement for enhanced indicator
+  const getRankMovement = () => {
+    const change = operator.rankChange || 0;
+    const previousRank = operator.rank + change;
+    const currentRank = operator.rank;
+    
+    return {
+      change,
+      previousRank,
+      currentRank,
+      isImprovement: change > 0,
+      isDecline: change < 0,
+      magnitude: Math.abs(change)
+    };
+  };
+
+  const rankMovement = getRankMovement();
 
   // Check if operator ever reached top-3 during the 22-day period
   const rankingHistory = analyzeRankingHistory(
@@ -86,33 +103,45 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
           )}
         </div>
 
-        {/* Stock Chart Column */}
-        <div className="flex items-center justify-end min-w-[90px]">
+        {/* Stock Chart + Trend Indicator Combined Column */}
+        <div className="flex items-center justify-end min-w-[200px] gap-1 relative">
           <StockChart 
             trend={getStockTrend()} 
             className="" 
-            currentRank={operator.rank}
-            previousRank={operator.rank + (operator.rankChange || 0)}
+            currentRank={rankMovement.currentRank}
+            previousRank={rankMovement.previousRank}
           />
-        </div>
-
-        {/* Rank Change Indicator Column */}
-        <div className="flex items-center justify-center min-w-[40px]">
-          {operator.rankChange !== undefined && operator.rankChange !== null && operator.rankChange !== 0 && (
-            <div className={cn(
-              'text-xs flex items-center gap-1 font-medium',
-              operator.rankChange > 0 ? 'text-green-400' : 'text-red-400'
-            )}>
-              <span>{operator.rankChange > 0 ? '↑' : '↓'}</span>
-              <span>{Math.abs(operator.rankChange)}</span>
-            </div>
-          )}
-          {/* Neutral indicator for no change */}
-          {(operator.rankChange === undefined || operator.rankChange === null || operator.rankChange === 0) && (
-            <div className="text-xs flex items-center gap-1 font-medium text-gray-400">
-              <span>−</span>
-            </div>
-          )}
+          
+          {/* Connection line between chart and indicator */}
+          <div className={cn(
+            'w-1 h-6 rounded-full opacity-30 transition-all duration-300',
+            rankMovement.isImprovement ? 'bg-green-400' : 
+            rankMovement.isDecline ? 'bg-red-400' : 
+            'bg-gray-400'
+          )}></div>
+          
+          {/* Rank Change Indicator - positioned right next to stock chart */}
+          <div className="flex items-center justify-center min-w-[40px]">
+            {rankMovement.change !== 0 && (
+              <div className={cn(
+                'text-sm flex items-center gap-1 font-bold px-2 py-1 rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer',
+                rankMovement.isImprovement 
+                  ? 'text-green-300 bg-green-500/20 border border-green-500/40 shadow-green-500/20 shadow-md hover:bg-green-500/30' 
+                  : 'text-red-300 bg-red-500/20 border border-red-500/40 shadow-red-500/20 shadow-md hover:bg-red-500/30'
+              )}
+              title={`${rankMovement.isImprovement ? 'Improved' : 'Declined'} by ${rankMovement.magnitude} position${rankMovement.magnitude > 1 ? 's' : ''}`}
+            >
+                <span className="text-base font-black">{rankMovement.isImprovement ? '↑' : '↓'}</span>
+                <span className="font-mono font-bold">{rankMovement.magnitude}</span>
+              </div>
+            )}
+            {/* Enhanced neutral indicator */}
+            {rankMovement.change === 0 && (
+              <div className="text-sm flex items-center gap-1 font-medium text-gray-400 px-2 py-1 rounded-lg bg-gray-500/10 border border-gray-500/20" title="No change in position">
+                <span className="text-gray-500 font-bold">−</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Count Column */}
