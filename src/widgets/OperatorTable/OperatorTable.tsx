@@ -6,13 +6,15 @@ import { cn } from 'shared/lib';
 
 interface OperatorTableProps {
   operators: Operator[];
+  groupId?: string;
+  selectedOperatorId?: string;
   className?: string;
 }
 
 type SortField = 'rank' | 'name' | 'count' | 'kpi' | 'average' | 'points';
 type SortDirection = 'asc' | 'desc';
 
-export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
+export const OperatorTable = ({ operators, groupId, selectedOperatorId, className }: OperatorTableProps) => {
   const { t } = useTranslation();
   const [sortField, setSortField] = useState<SortField>('rank');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -78,10 +80,10 @@ export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
   };
 
   return (
-    <div className={cn('bg-[#ffffff08] backdrop-blur-md rounded-xl border border-white/10 overflow-hidden', className)}>
+    <div className={cn('bg-[#ffffff08] backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)]', className)}>
       {/* Table Header */}
       <div className="bg-[#ffffff12] border-b border-white/10">
-        <div className="flex px-6 py-2 text-sm font-semibold text-gray-300">
+        <div className="flex px-6 py-2 text-sm font-semibold text-gray-300 bg-[#ffffff05]">
           {/* Left side - Operator Name and Reset Button */}
           <div className="flex-1 flex items-center gap-4">
             <button
@@ -153,6 +155,8 @@ export const OperatorTable = ({ operators, className }: OperatorTableProps) => {
           <OperatorRow 
             key={operator.id} 
             operator={operator}
+            groupId={groupId}
+            selectedOperatorId={selectedOperatorId}
             isEven={index % 2 === 0}
           />
         ))}

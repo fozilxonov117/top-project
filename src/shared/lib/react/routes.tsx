@@ -11,4 +11,8 @@ export const routes = createBrowserRouter([
     path: '/operators/:groupId',
     element: <OperatorTablePage />,
   },
+  {
+    path: '/operators/:groupId/profile/:operatorId',
+    element: <OperatorTablePage />,
+  },
 ]);

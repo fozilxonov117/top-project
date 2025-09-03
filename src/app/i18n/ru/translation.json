@@ -21,6 +21,7 @@
   "average": "Средний",
   "resetRanking": "Сброс",
   "groupNotFound": "Группа не найдена",
+  "operatorNotFound": "Оператор не найден",
   "backToDashboard": "Вернуться на главную",
   "months": {
     "january": "Январь",

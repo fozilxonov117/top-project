@@ -6,7 +6,7 @@ export interface Operator {
   points: number;
   count: number;
   kpi: number;
-  average: number;
+  average: string | number; // Allow both string (time format like "02:24") and number
   stars?: number;
   rankChange?: number; // +1, -1, or null
   activityData?: number[];

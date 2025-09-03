@@ -2,13 +2,23 @@ import type { Operator } from 'shared/types';
 import { GoldMedal, SilverMedal, BronzeMedal, StockChart } from 'shared/ui';
 import { MedalCounter } from 'features/operator-ranking';
 import { cn, analyzeRankingHistory } from 'shared/lib';
+import { useNavigate } from 'react-router';
 
 interface OperatorRowProps {
   operator: Operator;
+  groupId?: string;
+  selectedOperatorId?: string;
   isEven?: boolean;
 }
 
-export const OperatorRow = ({ operator }: OperatorRowProps) => {
+export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorRowProps) => {
+  const navigate = useNavigate();
+
+  const handleRowClick = () => {
+    if (groupId) {
+      navigate(`/operators/${groupId}/profile/${operator.id}`);
+    }
+  };
   const getRankDisplay = () => {
     if (operator.rank === 1) {
       return <GoldMedal className="h-8 w-8" />;
@@ -64,6 +74,9 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
 
   const rankMovement = getRankMovement();
 
+  // Check if this operator is selected
+  const isSelected = selectedOperatorId === operator.id;
+
   // Check if operator ever reached top-3 during the 22-day period
   const rankingHistory = analyzeRankingHistory(
     operator.rank, 
@@ -72,10 +85,15 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
   );
 
   return (
-    <div className={cn(
-      'flex px-6 py-3 hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0',
-      getRankRowStyle()
-    )}>
+    <div 
+      className={cn(
+        'flex px-6 py-3 hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0 cursor-pointer',
+        getRankRowStyle(),
+        isSelected && 'bg-[#ffffff24]'
+      )}
+      style={isSelected ? { boxShadow: 'rgba(0, 0, 0, 0.5) 0px 2px 15px 0px' } : undefined}
+      onClick={handleRowClick}
+    >
       {/* Left side - Operator Name and Rank Badge/Medal */}
       <div className="flex items-center gap-3 flex-1">
         {/* Rank Circle/Medal */}
@@ -88,6 +106,11 @@ export const OperatorRow = ({ operator }: OperatorRowProps) => {
           src={operator.avatar}
           alt={operator.name}
           className="h-12 w-12 rounded-full object-cover operator-avatar border-2 border-white/20"
+          style={{
+            objectPosition: 'center 20%', // Position the image to show head properly
+            backfaceVisibility: 'hidden',
+            transform: 'translateZ(0)',
+          }}
         />
         
         {/* Operator Name */}

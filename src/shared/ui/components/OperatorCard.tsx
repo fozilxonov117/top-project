@@ -112,7 +112,7 @@ export const OperatorCard = ({ operator, className }: OperatorCardProps) => {
         className={cn(
           'flex items-center justify-end flex-col gap-1 bg-[#ffffff14] shadow-lg rounded-2xl w-32 p-3 pb-4',
           'transition-all duration-500 ease-out',
-          'group-hover:shadow-2xl group-hover:bg-[#ffffff20] group-hover:scale-105',
+          'group-hover:shadow-2xl group-hover:bg-[#ffffff20] group-hover:scale-100',
           'group-hover:rotate-1 group-hover:backdrop-blur-sm',
           'relative overflow-hidden',
           getBorderColor(operator.rank),

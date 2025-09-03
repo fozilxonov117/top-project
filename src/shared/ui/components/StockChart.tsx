@@ -107,7 +107,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
   const rankData = generateRankData();
 
   return (
-    <div className={cn('flex items-center justify-center', className)}>
+    <div className={cn('flex items-center justify-center relative', className)}>
       <div className={cn(
         'bg-[#0000001f] rounded-sm p-1 border transition-all duration-300',
         trend === 'up' ? 'border-green-500/50 shadow-green-500/20 shadow-sm' :
@@ -232,55 +232,9 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
             </g>
           ))}
           
-          {/* Tooltip for hovered point */}
+          {/* Highlight point when hovered */}
           {hoveredPoint && (
             <g>
-              {/* Tooltip background - smart positioning */}
-              {(() => {
-                const tooltipX = hoveredPoint.x > 125 ? hoveredPoint.x - 50 : hoveredPoint.x - 25;
-                const tooltipY = hoveredPoint.y < 20 ? hoveredPoint.y + 5 : hoveredPoint.y - 25;
-                
-                return (
-                  <>
-                    <rect
-                      x={tooltipX}
-                      y={tooltipY}
-                      width="50"
-                      height="20"
-                      fill="#000000"
-                      stroke="#ffff00"
-                      strokeWidth="1"
-                      rx="3"
-                      opacity="0.95"
-                    />
-                    {/* Tooltip text */}
-                    <text
-                      x={tooltipX + 25}
-                      y={tooltipY + 8}
-                      fontSize="6"
-                      fill="#ffffff"
-                      textAnchor="middle"
-                      fontFamily="monospace"
-                      fontWeight="normal"
-                    >
-                      Day {hoveredPoint.day + 1}
-                    </text>
-                    <text
-                      x={tooltipX + 25}
-                      y={tooltipY + 16}
-                      fontSize="7"
-                      fill="#ffff00"
-                      textAnchor="middle"
-                      fontFamily="monospace"
-                      fontWeight="bold"
-                    >
-                      Position #{Math.round(hoveredPoint.rank)}
-                    </text>
-                  </>
-                );
-              })()}
-              
-              {/* Highlight point */}
               <circle
                 cx={hoveredPoint.x}
                 cy={hoveredPoint.y}
@@ -449,6 +403,37 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
           })}
         </svg>
       </div>
+      
+      {/* CSS-based tooltip positioned ABOVE the hovered point */}
+      {hoveredPoint && (
+        <div 
+          className="absolute z-50 pointer-events-none"
+          style={{
+            left: `${hoveredPoint.x - 25}px`,
+            top: `${hoveredPoint.y - 45}px`, // 45px ABOVE the point
+          }}
+        >
+          <div className="bg-black border border-yellow-400 rounded-md px-2 py-1 shadow-lg opacity-95 min-w-[80px]">
+            <div className="text-white text-[10px] font-mono text-center leading-tight">
+              Day {hoveredPoint.day + 1}
+            </div>
+            <div className="text-yellow-400 text-[11px] font-mono font-bold text-center leading-tight">
+              Position #{Math.round(hoveredPoint.rank)}
+            </div>
+          </div>
+          {/* Arrow pointing down to the data point */}
+          <div 
+            className="absolute left-1/2 transform -translate-x-1/2 -bottom-1"
+            style={{
+              width: 0,
+              height: 0,
+              borderLeft: '4px solid transparent',
+              borderRight: '4px solid transparent',
+              borderTop: '4px solid rgb(234, 179, 8)', // yellow-400
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
