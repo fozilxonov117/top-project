@@ -3,6 +3,53 @@
 @layer {
 }
 
+/* Bitcoin/Crypto-style animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes cryptoPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes cryptoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+}
+
+/* Tailwind custom utilities */
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-crypto-pulse {
+  animation: cryptoPulse 2s ease-in-out infinite;
+}
+
+.animate-crypto-glow {
+  animation: cryptoGlow 3s ease-in-out infinite;
+}
+
+.transition-2000 {
+  transition-duration: 2000ms;
+}
+
 html,
 body {
   margin: 0;
@@ -187,6 +234,17 @@ img {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Animation utility classes */
 .animate-slideInFromRight {
   animation: slideInFromRight 0.3s ease-out forwards;
@@ -198,4 +256,8 @@ img {
 
 .animate-fadeInUp {
   animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
 }

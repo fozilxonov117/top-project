@@ -45,10 +45,10 @@ export const ProfileHeader = ({ operator }: ProfileHeaderProps) => {
 
         {/* Right side - Leaderboard Button */}
         <div className="flex items-center gap-4">
-          <div className="bg-green-600 hover:bg-green-700 transition-colors rounded-lg px-6 py-3 text-white font-semibold">
+          <div className="bg-transparent border border-green-500/50 hover:border-green-400/70 transition-colors rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
               <div className="text-sm opacity-80">Leaderboard</div>
-              <div className="text-lg font-bold">
+              <div className="text-lg font-bold text-green-400">
                 {operator.rank}{getPositionSuffix(operator.rank)} place
               </div>
             </div>

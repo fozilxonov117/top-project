@@ -21,7 +21,7 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');   
     } else {
       setSortField(field);
       setSortDirection('asc');

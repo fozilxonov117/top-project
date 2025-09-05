@@ -87,7 +87,7 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
   return (
     <div 
       className={cn(
-        'flex px-6 py-3 hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0 cursor-pointer',
+        'flex px-6 py-[11px] hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0 cursor-pointer',
         getRankRowStyle(),
         isSelected && 'bg-[#ffffff24]'
       )}

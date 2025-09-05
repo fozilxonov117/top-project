@@ -29,7 +29,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
   };
 
   return (
-    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px' }}>
+    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="relative">
@@ -53,7 +53,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="bg-green-600 hover:bg-green-700 transition-colors rounded-lg px-6 py-3 text-white font-semibold">
+          <div className="bg-[#ffffff21] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] transition-colors rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
               <div className="text-sm opacity-80">Leaderboard</div>
               <div className="text-lg font-bold">
@@ -68,15 +68,15 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
 };
 
 const ProfileStats = ({ operator }: { operator: Operator }) => (
-  <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px' }}>
+  <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
     <div className="grid grid-cols-4 gap-6">
       <div className="text-center">
         <div className="text-white/70 text-sm font-medium mb-2">Count</div>
         <div className="text-3xl font-bold text-white">{operator.count}</div>
       </div>
       <div className="text-center">
-        <div className="text-white/70 text-sm font-medium mb-2">Count</div>
-        <div className="text-3xl font-bold text-white">{operator.count}</div>
+        <div className="text-white/70 text-sm font-medium mb-2">Monthly Average</div>
+        <div className="text-3xl font-bold text-white">{operator.average}</div>
       </div>
       <div className="text-center">
         <div className="text-white/70 text-sm font-medium mb-2">KPI</div>
@@ -91,6 +91,8 @@ const ProfileStats = ({ operator }: { operator: Operator }) => (
 );
 
 const ProfileActivity = ({ operator }: { operator: Operator }) => {
+  const [clickedDay, setClickedDay] = useState<number | null>(null); // Changed from hoveredDay
+  
   const getTrend = (): 'up' | 'down' | 'neutral' => {
     const change = operator.rankChange || 0;
     if (change > 0) return 'up';
@@ -98,40 +100,81 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
     return 'neutral';
   };
 
+  const handleClickDay = (day: number | null) => { // Changed from handleHoverDay
+    setClickedDay(day);
+  };
+
+  // Calculate daily statistics based on clicked day or current day
+  const getDailyStats = () => {
+    const day = clickedDay ?? 22; // Default to current day (last day)
+    const currentDay = clickedDay !== null ? clickedDay + 1 : 23; // Display day number (1-23)
+    
+    // Generate realistic daily statistics based on day progression
+    const baseDailyCount = Math.round((operator.count || 104) / 23);
+    const dailyCountVariation = Math.sin(day * 0.3) * 2 + Math.cos(day * 0.7) * 1.5;
+    const dailyCount = Math.max(1, Math.round(baseDailyCount + dailyCountVariation));
+    
+    // Calculate daily average (response time) with some variation
+    const averageStr = typeof operator.average === 'string' ? operator.average : '1:45';
+    const baseMinutes = parseInt(averageStr.split(':')[0] || '1');
+    const baseSeconds = parseInt(averageStr.split(':')[1] || '45');
+    const baseTotalSeconds = baseMinutes * 60 + baseSeconds;
+    const dailyVariation = Math.sin(day * 0.4) * 15 + Math.cos(day * 0.6) * 10; // ±25 seconds variation
+    const dailyTotalSeconds = Math.max(30, baseTotalSeconds + dailyVariation);
+    const dailyAverage = `${Math.floor(dailyTotalSeconds / 60)}:${String(Math.floor(dailyTotalSeconds % 60)).padStart(2, '0')}`;
+    
+    return {
+      currentDay,
+      dailyCount,
+      dailyAverage,
+      monthlyKpi: operator.kpi, // KPI usually doesn't change daily
+      isClicked: clickedDay !== null // Changed from isHovered
+    };
+  };
+
+  const stats = getDailyStats();
+
   return (
-    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px' }}>
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-white">Activity</h2>
-        <div className="w-full flex justify-center py-8">
+    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
+      <div className="h-full flex flex-col">
+        {/* Stock Chart Area - 70% of space */}
+        <div className="w-full flex justify-center items-center overflow-hidden" style={{ height: '80%' }}>
           <div 
-            className="transform scale-[2.5]"
-            style={{ transformOrigin: 'center' }}
+            className="transform scale-[2.8] flex items-center justify-center h-[90px] "
+            style={{ transformOrigin: 'center', maxWidth: '100%', maxHeight: '100%' }}
           >
             <StockChart
               trend={getTrend()}
               currentRank={operator.rank}
               previousRank={operator.rank + (operator.rankChange || 0)}
               className="w-full"
+              onClickDay={handleClickDay}
+              profileMode={true}
             />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-white/20">
-          <div className="text-center">
-            <div className="text-white/70 text-sm font-medium mb-2">Monthly Average</div>
-            <div className="text-2xl font-bold text-white">{operator.average}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-white/70 text-sm font-medium mb-2">Top 3 Medals</div>
-            <div className="text-2xl font-bold text-yellow-400">{operator.topMedalCount || 0}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-white/70 text-sm font-medium mb-2">Rank Change</div>
-            <div className={`text-2xl font-bold ${
-              (operator.rankChange || 0) > 0 ? 'text-green-400' :
-              (operator.rankChange || 0) < 0 ? 'text-red-400' :
-              'text-gray-400'
-            }`}>
-              {(operator.rankChange || 0) > 0 ? '+' : ''}{operator.rankChange || 0}
+        {/* Daily Statistics Area - 30% of space */}
+        <div className="border-t border-white/20 flex-shrink-0" style={{ height: '20%' }}>
+          <div className="grid grid-cols-3 gap-6 pt-3 h-full items-center">
+            <div className="text-center">
+              <div className="text-white/70 text-xs font-medium mb-1">
+                Daily Count {stats.isClicked && <span className="text-xs text-green-400">(Day {stats.currentDay})</span>}
+              </div>
+              <div className={`text-xl font-bold transition-colors duration-200 ${stats.isClicked ? 'text-green-400' : 'text-white'}`}>
+                {stats.dailyCount}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-white/70 text-xs font-medium mb-1">
+                Daily Average {stats.isClicked && <span className="text-xs text-green-400">(Day {stats.currentDay})</span>}
+              </div>
+              <div className={`text-xl font-bold transition-colors duration-200 ${stats.isClicked ? 'text-green-400' : 'text-white'}`}>
+                {stats.dailyAverage}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-white/70 text-xs font-medium mb-1">Monthly KPI</div>
+              <div className="text-xl font-bold text-blue-400">{stats.monthlyKpi}</div>
             </div>
           </div>
         </div>
@@ -256,7 +299,7 @@ export const OperatorTablePage = () => {
         {/* Right side - Profile Panel (slide in from right with smooth animation) */}
         {isProfileVisible && selectedOperator && (
           <div 
-            className={`w-1/3 flex flex-col min-h-0 bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] border-l border-white/20 transition-all duration-300 ease-out ${
+            className={`w-1/3 flex flex-col min-h-0 bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)]  transition-all duration-300 ease-out ${
               selectedOperator && !isAnimating 
                 ? 'transform translate-x-0 opacity-100' 
                 : 'transform translate-x-full opacity-0'
@@ -270,7 +313,7 @@ export const OperatorTablePage = () => {
             }}
           >
             {/* Profile Header - Fixed */}
-            <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] px-4 sm:px-8 py-4 flex-shrink-0 border-b border-white/20">
+            <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] px-4 sm:px-8 py-4 flex-shrink-0 ">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl sm:text-2xl font-bold text-white opacity-0 animate-fadeInUp" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
                   Profile Info

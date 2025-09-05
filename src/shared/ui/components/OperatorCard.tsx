@@ -51,13 +51,13 @@ const getStatsBoxHeight = (rank: number) => {
 const getPointColors = (rank: number) => {
   switch (rank) {
     case 1:
-      return 'bg-[#f4d725] text-white'; // Gold for 1st place
+      return 'bg-transparent text-yellow-400 border border-yellow-400/50'; // Transparent with gold border for 1st place
     case 2:
-      return 'bg-gray-100 text-gray-800'; // Silver for 2nd place
+      return 'bg-transparent text-gray-300 border border-gray-400/50'; // Transparent with silver border for 2nd place
     case 3:
-      return 'bg-[#feb800] text-amber-800'; // Bronze for 3rd place
+      return 'bg-transparent text-amber-400 border border-amber-500/50'; // Transparent with bronze border for 3rd place
     default:
-      return 'bg-green-100 text-green-700'; // Default green
+      return 'bg-transparent text-green-400 border border-green-500/50'; // Transparent with green border
   }
 };
 
