@@ -56,7 +56,10 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
       
       let dayRank: number;
       
-      if (day === days - 1) {
+      if (day === 0) {
+        // For the first day, use the exact starting rank without volatility
+        dayRank = startRank;
+      } else if (day === days - 1) {
         dayRank = currentRank;
       } else {
         const progressRatio = day / (days - 1);
@@ -81,17 +84,39 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
         }
         
         dayRank = Math.max(1, Math.min(25, dayRank));
+        
+        // For profile mode, round to nearest integer for better alignment with numbers
+        if (profileMode && dayRank <= 10) {
+          dayRank = Math.round(dayRank);
+        }
       }
       
-      // Convert rank to Y position
-      const cellPosition = Math.ceil(Math.min(dayRank, 10) / 2);
-      const midlinePosition = heightMultiplier;
-      
+      // Convert rank to Y position with professional midline separation
       let y;
-      if (dayRank <= 10) {
-        y = 4 + ((cellPosition - 1) / 5) * (height * midlinePosition - 4);
+      if (profileMode) {
+        // Professional positioning system for profile mode
+        if (dayRank <= 10) {
+          // Top 10 zone: Above the midline with precise spacing
+          const topSectionHeight = height * heightMultiplier - 4; // Reserve space above midline
+          const rankSpacing = topSectionHeight / 10; // Equal spacing for ranks 1-10
+          y = 4 + (dayRank - 1) * rankSpacing;
+        } else {
+          // Below Top 10 zone: Below the midline
+          const midlineY = height * heightMultiplier;
+          const bottomSectionHeight = height * (1 - heightMultiplier) - 4;
+          const belowTop10Spacing = bottomSectionHeight / 15; // Space for ranks 11-25
+          y = midlineY + 4 + ((dayRank - 11) * belowTop10Spacing);
+        }
       } else {
-        y = (height * midlinePosition) + ((dayRank - 10) / 15) * (height * (1 - midlinePosition) - 4);
+        // Original calculation for table mode - unchanged
+        const cellPosition = Math.ceil(Math.min(dayRank, 10) / 2);
+        const midlinePosition = heightMultiplier;
+        
+        if (dayRank <= 10) {
+          y = 4 + ((cellPosition - 1) / 5) * (height * midlinePosition - 4);
+        } else {
+          y = (height * midlinePosition) + ((dayRank - 10) / 15) * (height * (1 - midlinePosition) - 4);
+        }
       }
       
       // Default green color (since green path connects all)
@@ -105,117 +130,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
 
   const rankData = generateRankData();
 
-  // Generate ultra-smooth flowing curves like professional financial charts
-  const generateSmoothPath = (points: Array<{x: number, y: number}>) => {
-    if (points.length < 2) return '';
-    
-    if (!profileMode) {
-      // Use straight lines for table mode
-      let path = `M ${points[0].x} ${points[0].y}`;
-      for (let i = 1; i < points.length; i++) {
-        path += ` L ${points[i].x} ${points[i].y}`;
-      }
-      return path;
-    }
-    
-    // Create ultra-smooth flowing curves for profile mode using enhanced spline interpolation
-    let path = `M ${points[0].x} ${points[0].y}`;
-    
-    for (let i = 0; i < points.length - 1; i++) {
-      const current = points[i];
-      const next = points[i + 1];
-      
-      // Get extended surrounding points for ultra-smooth interpolation
-      const prev = points[i - 1] || points[i];
-      const nextNext = points[i + 2] || points[i + 1];
-      
-      // Enhanced smoothing parameters for maximum naturalness
-      const smoothness = 0.35; // Optimal smoothness factor
-      const curvature = 0.25;   // Controls curve intensity
-      
-      // Calculate direction vectors for natural flow
-      const prevVector = {
-        x: current.x - prev.x,
-        y: current.y - prev.y
-      };
-      
-      const nextVector = {
-        x: nextNext.x - next.x,
-        y: nextNext.y - next.y
-      };
-      
-      // Enhanced control points using weighted averaging for natural curves
-      const cp1x = current.x + (next.x - current.x) * smoothness + prevVector.x * curvature;
-      const cp1y = current.y + (next.y - current.y) * smoothness + prevVector.y * curvature;
-      
-      const cp2x = next.x - (next.x - current.x) * smoothness - nextVector.x * curvature;
-      const cp2y = next.y - (next.y - current.y) * smoothness - nextVector.y * curvature;
-      
-      // Create ultra-smooth cubic bezier curves
-      path += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${next.x} ${next.y}`;
-    }
-    
-    return path;
-  };
 
-  // Generate ultra-smooth flowing red curves for downward trends
-  const generateRedCurveSegments = (points: Array<{x: number, y: number, rank: number}>) => {
-    const segments = [];
-    
-    for (let i = 1; i < points.length; i++) {
-      const current = points[i];
-      const previous = points[i - 1];
-      const rankChange = current.rank - previous.rank;
-      
-      // Only create red segments for significant downward trends
-      if (rankChange > 0.5) {
-        // Use the same ultra-smooth approach as the main curve
-        const prev = points[i - 2] || previous;
-        const next = points[i + 1] || current;
-        
-        // Enhanced smoothing for red segments
-        const smoothness = 0.35;
-        const curvature = 0.25;
-        
-        // Calculate direction vectors for natural red curve flow
-        const prevVector = {
-          x: previous.x - prev.x,
-          y: previous.y - prev.y
-        };
-        
-        const nextVector = {
-          x: next.x - current.x,
-          y: next.y - current.y
-        };
-        
-        // Ultra-smooth control points for red segments
-        const cp1x = previous.x + (current.x - previous.x) * smoothness + prevVector.x * curvature;
-        const cp1y = previous.y + (current.y - previous.y) * smoothness + prevVector.y * curvature;
-        
-        const cp2x = current.x - (current.x - previous.x) * smoothness - nextVector.x * curvature;
-        const cp2y = current.y - (current.y - previous.y) * smoothness - nextVector.y * curvature;
-        
-        const path = `M ${previous.x} ${previous.y} C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${current.x} ${current.y}`;
-        
-        segments.push(
-          <path
-            key={`red-curve-${i}`}
-            d={path}
-            fill="none"
-            stroke="#ff6b6b"
-            strokeWidth={chartStyles.strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.95"
-            filter="url(#cryptoGlow)"
-            className="transition-all duration-300"
-          />
-        );
-      }
-    }
-    
-    return segments;
-  };
 
   return (
     <div className={cn(
@@ -306,12 +221,15 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
             />
           ))}
           
-          {/* Position labels - conditional rendering based on profileMode */}
+          {/* Professional rank numbers - only 1-10 above midline */}
           {profileMode ? (
-            // Single column layout for profile mode (1-10) with increased spacing
+            // Single column layout for profile mode (1-10) with professional spacing
             Array.from({ length: 10 }, (_, i) => {
               const position = i + 1;
-              const y = 4 + (i / 9) * (chartStyles.containerHeight * chartStyles.spacingMultiplier - 4);
+              // Professional positioning system matching dot positions
+              const topSectionHeight = chartStyles.containerHeight * chartStyles.spacingMultiplier - 4;
+              const rankSpacing = topSectionHeight / 10;
+              const y = 4 + i * rankSpacing;
               
               return (
                 <text
@@ -363,101 +281,178 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
             })
           )}
           
-          {/* Compact Top 10 boundary */}
-          <line
-            x1={20}
-            y1={chartStyles.containerHeight * chartStyles.spacingMultiplier}
-            x2={160}
-            y2={chartStyles.containerHeight * chartStyles.spacingMultiplier}
-            stroke="#fbbf24"
-            strokeWidth="1"
-            strokeDasharray="3,2"
-            opacity="0.7"
-            filter="url(#cryptoGlow)"
-          />
+          {/* Orange Dashed Midline - Separates Top 10 from Expired */}
+          <g>
+            {/* Main orange dashed midline */}
+            <line
+              x1={15}
+              y1={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              x2={165}
+              y2={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              stroke="#ff8c00"
+              strokeWidth="1"
+              opacity="0.8"
+              strokeDasharray="3,2"
+              strokeLinecap="round"
+            />
+            
+            {/* Orange midline glow effect for dashed line */}
+            <line
+              x1={15}
+              y1={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              x2={165}
+              y2={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              stroke="#ff4500"
+              strokeWidth="0.3"
+              opacity="0.2"
+              strokeDasharray="3,2"
+              strokeLinecap="round"
+            />
+            
+            {/* Top 10 zone label */}
+            <text
+              x={22}
+              y={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier - 3) : (chartStyles.containerHeight * chartStyles.spacingMultiplier - 3)}
+              fontSize="4"
+              fill="#ff8c00"
+              opacity="0.9"
+              fontFamily="JetBrains Mono, Consolas, monospace"
+              fontWeight="700"
+              className="drop-shadow-sm"
+            >
+              TOP 10 ZONE
+            </text>
+            
+            {/* Expired zone label */}
+            <text
+              x={22}
+              y={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier + 8) : (chartStyles.containerHeight * chartStyles.spacingMultiplier + 8)}
+              fontSize="3"
+              fill="#ff6b6b"
+              opacity="0.7"
+              fontFamily="JetBrains Mono, Consolas, monospace"
+              fontWeight="600"
+              className="drop-shadow-sm"
+            >
+              EXPIRED
+            </text>
+            
+            {/* Orange midline indicators - more visible */}
+            <circle
+              cx={15}
+              cy={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              r="2"
+              fill="#ff8c00"
+              opacity="1"
+            />
+            <circle
+              cx={165}
+              cy={profileMode ? (chartStyles.containerHeight * chartStyles.spacingMultiplier) : (chartStyles.containerHeight * chartStyles.spacingMultiplier)}
+              r="2"
+              fill="#ff8c00"
+              opacity="1"
+            />
+          </g>
           
-          {/* Compact TOP 10 label */}
-          <text
-            x={22}
-            y={chartStyles.containerHeight * chartStyles.spacingMultiplier - 2}
-            fontSize="4"
-            fill="#fbbf24"
-            opacity="0.8"
-            fontFamily="JetBrains Mono, Consolas, monospace"
-            fontWeight="700"
-            className="drop-shadow-sm"
-          >
-            TOP 10
-          </text>
+          {/* GUARANTEED connection with moderately squared curves */}
           
-          {/* Continuous path connecting all dots - smooth curves for profile mode */}
+          {/* Approach 1: Moderately squared path with controlled curves */}
           <path
-            d={profileMode ? generateSmoothPath(rankData) : `M ${rankData[0]?.x} ${rankData[0]?.y} ${rankData.slice(1).map(point => 
-              `L ${point.x} ${point.y}`
-            ).join(' ')}`}
+            d={(() => {
+              if (rankData.length < 2) return '';
+              
+              let path = `M ${rankData[0].x} ${rankData[0].y}`;
+              
+              for (let i = 1; i < rankData.length; i++) {
+                const current = rankData[i];
+                const previous = rankData[i - 1];
+                const prev = rankData[i - 2] || previous;
+                const next = rankData[i + 1] || current;
+                
+                // Reduced parameters for more squared appearance
+                const smoothness = 0.2; // Reduced from 0.35
+                const tension = 0.1; // Reduced from 0.25
+                
+                // Calculate controlled directional vectors
+                const prevVector = {
+                  x: previous.x - prev.x,
+                  y: previous.y - prev.y
+                };
+                
+                const nextVector = {
+                  x: next.x - current.x,
+                  y: next.y - current.y
+                };
+                
+                // Controlled control points for moderate curves
+                const cp1x = previous.x + (current.x - previous.x) * smoothness + prevVector.x * tension;
+                const cp1y = previous.y + (current.y - previous.y) * smoothness + prevVector.y * tension;
+                
+                const cp2x = current.x - (current.x - previous.x) * smoothness - nextVector.x * tension;
+                const cp2y = current.y - (current.y - previous.y) * smoothness - nextVector.y * tension;
+                
+                // Create moderately squared curves
+                path += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${current.x} ${current.y}`;
+              }
+              
+              return path;
+            })()}
             fill="none"
             stroke="#00d4aa"
             strokeWidth={chartStyles.strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
-            opacity="1"
+            opacity="0.9"
             filter="url(#cryptoGlow)"
             className="transition-all duration-300"
           />
           
-          {/* Individual line segments - only for table mode */}
-          {!profileMode && rankData.slice(1).map((point, index) => {
+          {/* Approach 2: Moderately squared red overlay curves for deteriorating trends */}
+          {rankData.slice(1).map((point, index) => {
             const prevPoint = rankData[index];
-            return (
-              <line
-                key={`green-${index}`}
-                x1={prevPoint.x}
-                y1={prevPoint.y}
-                x2={point.x}
-                y2={point.y}
-                stroke="#00d4aa"
-                strokeWidth={chartStyles.strokeWidth}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.9"
-                filter="url(#cryptoGlow)"
-                className="transition-all duration-300"
-              />
-            );
-          })}
-          
-          {/* Red segments for downward trends - both modes */}
-          {profileMode ? (
-            // Smooth curved red segments for profile mode
-            generateRedCurveSegments(rankData)
-          ) : (
-            // Straight line red segments for table mode
-            rankData.slice(1).map((point, index) => {
-              const prevPoint = rankData[index];
-              const rankChange = point.rank - prevPoint.rank;
+            const rankChange = point.rank - prevPoint.rank;
+            
+            // Only add red overlay for deteriorating segments with moderate curves
+            if (rankChange > 0) {
+              const prev = rankData[index - 1] || prevPoint;
+              const next = rankData[index + 2] || point;
               
-              // Only show red for significant downward trends
-              if (rankChange > 0.5) {
-                return (
-                  <line
-                    key={`red-${index}`}
-                    x1={prevPoint.x}
-                    y1={prevPoint.y}
-                    x2={point.x}
-                    y2={point.y}
-                    stroke="#ff6b6b"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.95"
-                    filter="url(#cryptoGlow)"
-                    className="transition-all duration-300"
-                  />
-                );
-              }
-              return null;
-            })
-          )}
+              const smoothness = 0.2; // Same moderate smoothness
+              const tension = 0.1; // Same moderate tension
+              
+              const prevVector = {
+                x: prevPoint.x - prev.x,
+                y: prevPoint.y - prev.y
+              };
+              
+              const nextVector = {
+                x: next.x - point.x,
+                y: next.y - point.y
+              };
+              
+              const cp1x = prevPoint.x + (point.x - prevPoint.x) * smoothness + prevVector.x * tension;
+              const cp1y = prevPoint.y + (point.y - prevPoint.y) * smoothness + prevVector.y * tension;
+              
+              const cp2x = point.x - (point.x - prevPoint.x) * smoothness - nextVector.x * tension;
+              const cp2y = point.y - (point.y - prevPoint.y) * smoothness - nextVector.y * tension;
+              
+              return (
+                <path
+                  key={`red-moderate-curve-${index}`}
+                  d={`M ${prevPoint.x} ${prevPoint.y} C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${point.x} ${point.y}`}
+                  fill="none"
+                  stroke="#ff6b6b"
+                  strokeWidth={chartStyles.strokeWidth}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.95"
+                  filter="url(#cryptoGlow)"
+                  className="transition-all duration-300"
+                />
+              );
+            }
+            return null;
+          })}
           
           {/* Minimized dots for 23 days */}
           {rankData.map((point, index) => (
@@ -530,25 +525,25 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                     <circle
                       cx={clickedDayPoint.x}
                       cy={clickedDayPoint.y}
-                      r="5"
+                      r="3"
                       fill="none"
                       stroke="#fbbf24"
-                      strokeWidth="3"
+                      strokeWidth="2"
                       opacity="0.9"
                       filter="url(#strongGlow)"
                     />
                     <circle
                       cx={clickedDayPoint.x}
                       cy={clickedDayPoint.y}
-                      r="8"
+                      r="5"
                       fill="none"
                       stroke="#fbbf24"
-                      strokeWidth="1.5"
+                      strokeWidth="1"
                       opacity="0.6"
                     >
                       <animate
                         attributeName="r"
-                        values="5;15;5"
+                        values="3;8;3"
                         dur="1.5s"
                         repeatCount="indefinite"
                       />
@@ -644,21 +639,30 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
         </svg>
       </div>
       
-      {/* Compact tooltip with transparent styling */}
+      {/* Professional tooltip positioned outside chart area to avoid hiding dots */}
       {clickedPoint && (
         <div 
           className="absolute z-[999999999999999999] pointer-events-none"
           style={{
-            left: `${clickedPoint.x - 15}px`,
-            top: `${clickedPoint.y - 25}px`,
+            left: `${clickedPoint.x}px`,
+            top: clickedPoint.y < 30 
+              ? `${clickedPoint.y + 15}px`  // Position well below for high dots - outside chart area
+              : `${clickedPoint.y - 30}px`, // Position well above for low dots - outside chart area
+            transform: 'translateX(-50%)',
           }}
         >
-          <div className="bg-black/70 backdrop-blur-sm border border-white/30 rounded px-1.5 py-1 shadow-lg min-w-[30px] text-center">
-            <div className="text-white text-[6px] font-semibold leading-none mb-0.5 font-mono">
+          <div className="bg-black/95 backdrop-blur border border-amber-400/70 rounded-lg px-2 py-1 shadow-2xl">
+            <div className="text-white text-[5px] font-medium leading-none mb-1 font-mono">
               Day {clickedPoint.day + 1}
             </div>
-            <div className="text-amber-300 text-[6px] font-bold leading-none font-mono">
-              #{Math.round(clickedPoint.rank)}
+            <div className={`text-[5px] font-bold leading-none font-mono ${
+              Math.round(clickedPoint.rank) <= 10 
+                ? 'text-amber-300' 
+                : 'text-red-400'
+            }`}>
+              {Math.round(clickedPoint.rank) <= 10 
+                ? `#${Math.round(clickedPoint.rank)}` 
+                : 'EXPIRED'}
             </div>
           </div>
           <div 

@@ -5,6 +5,7 @@ import { BackToTop } from 'shared/ui';
 import { mockOperatorGroups } from 'shared/lib/mock/operatorData';
 import { ProfileHeader } from './ui/ProfileHeader';
 import { ProfileStats } from './ui/ProfileStats';
+import { YesterdayStats } from './ui/YesterdayStats';
 import type { Operator } from 'shared/types';
 import { cn } from 'shared/lib';
 
@@ -295,6 +296,9 @@ export const OperatorProfilePage = () => {
 
           {/* Profile Stats */}
           <ProfileStats operator={operator} />
+
+          {/* Yesterday Stats */}
+          <YesterdayStats operator={operator} />
 
           {/* Activity Section with Dedicated Profile Stock Chart */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 ">

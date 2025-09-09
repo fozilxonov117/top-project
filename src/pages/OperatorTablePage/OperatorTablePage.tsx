@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { OperatorTable } from 'widgets/OperatorTable';
 import { mockOperatorGroups } from 'shared/lib/mock/operatorData';
 import { StockChart, GoldMedal, SilverMedal, BronzeMedal } from 'shared/ui';
@@ -29,7 +29,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
   };
 
   return (
-    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="relative">
@@ -68,7 +68,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
 };
 
 const ProfileStats = ({ operator }: { operator: Operator }) => (
-  <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+  <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
     <div className="grid grid-cols-4 gap-6">
       <div className="text-center">
         <div className="text-white/70 text-sm font-medium mb-2">Count</div>
@@ -89,6 +89,65 @@ const ProfileStats = ({ operator }: { operator: Operator }) => (
     </div>
   </div>
 );
+
+const YesterdayStatsProfile = ({ operator }: { operator: Operator }) => {
+  // Generate yesterday's stats (compact version for profile panel)
+  const generateYesterdayStats = () => {
+    const baseCount = operator.count;
+    const baseAverage = operator.average;
+    const baseKpi = operator.kpi;
+    
+    // Generate yesterday's values with slight variations
+    const yesterdayCount = Math.max(1, baseCount - Math.floor(Math.random() * 3) + 1);
+    
+    // Convert average to minutes for calculation
+    const avgString = baseAverage.toString();
+    const [avgMin, avgSec] = avgString.split(':').map(Number);
+    const avgTotalSeconds = avgMin * 60 + avgSec;
+    
+    // Yesterday's average with variation (±30 seconds)
+    const yesterdayAvgSeconds = Math.max(60, avgTotalSeconds + (Math.random() - 0.5) * 60);
+    const yesterdayAvgMin = Math.floor(yesterdayAvgSeconds / 60);
+    const yesterdayAvgSec = Math.floor(yesterdayAvgSeconds % 60);
+    const yesterdayAverage = `${yesterdayAvgMin.toString().padStart(2, '0')}:${yesterdayAvgSec.toString().padStart(2, '0')}`;
+    
+    // Yesterday's KPI with variation (±2.5)
+    const yesterdayKpi = Math.max(60, parseFloat(baseKpi.toString()) + (Math.random() - 0.5) * 5).toFixed(1);
+    
+    return {
+      count: yesterdayCount,
+      average: yesterdayAverage,
+      kpi: yesterdayKpi
+    };
+  };
+
+  const yesterdayData = generateYesterdayStats();
+
+  return (
+    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+      <h3 className="text-lg font-bold text-white mb-4">Yesterday's Stats</h3>
+      <div className="grid grid-cols-3 gap-4">
+        {/* Yesterday's Daily Count */}
+        <div className="text-center">
+          <div className="text-white/70 text-xs font-medium mb-1">Daily Count</div>
+          <div className="text-xl font-bold text-white">{yesterdayData.count}</div>
+        </div>
+
+        {/* Yesterday's Daily Average */}
+        <div className="text-center">
+          <div className="text-white/70 text-xs font-medium mb-1">Daily Average</div>
+          <div className="text-xl font-bold text-white">{yesterdayData.average}</div>
+        </div>
+
+        {/* Yesterday's KPI */}
+        <div className="text-center">
+          <div className="text-white/70 text-xs font-medium mb-1">KPI</div>
+          <div className="text-xl font-bold text-white">{yesterdayData.kpi}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProfileActivity = ({ operator }: { operator: Operator }) => {
   const [clickedDay, setClickedDay] = useState<number | null>(null); // Changed from hoveredDay
@@ -135,7 +194,7 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
   const stats = getDailyStats();
 
   return (
-    <div className="bg-[#ffffff24] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
+    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
       <div className="h-full flex flex-col">
         {/* Stock Chart Area - 70% of space */}
         <div className="w-full flex justify-center items-center overflow-hidden" style={{ height: '80%' }}>
@@ -187,10 +246,6 @@ export const OperatorTablePage = () => {
   const { groupId, operatorId } = useParams<{ groupId: string; operatorId?: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  // Animation states
-  const [isProfileVisible, setIsProfileVisible] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   // Find the group by ID
   const group = mockOperatorGroups.find(g => g.id === groupId);
@@ -199,24 +254,6 @@ export const OperatorTablePage = () => {
   const selectedOperator: Operator | undefined = operatorId 
     ? group?.operators.find(op => op.id === operatorId)
     : undefined;
-
-  // Handle profile panel animations
-  useEffect(() => {
-    if (selectedOperator && !isProfileVisible) {
-      // Opening animation
-      setIsAnimating(true);
-      setIsProfileVisible(true);
-      // Small delay to ensure smooth transition
-      setTimeout(() => setIsAnimating(false), 50);
-    } else if (!selectedOperator && isProfileVisible) {
-      // Closing animation
-      setIsAnimating(true);
-      setTimeout(() => {
-        setIsProfileVisible(false);
-        setIsAnimating(false);
-      }, 300); // Match the CSS transition duration
-    }
-  }, [selectedOperator, isProfileVisible]);
 
   const handleCloseProfile = () => {
     if (groupId) {
@@ -253,7 +290,7 @@ export const OperatorTablePage = () => {
 
   return (
     <div 
-      className="relative min-h-screen h-screen bg-gray-50 flex flex-col overflow-hidden"
+      className="relative h-screen bg-gray-50 flex flex-col overflow-hidden"
       style={{
         backgroundImage: "url('/assets/background (1)/255/Background 1 (2).png')",
         backgroundSize: 'cover',
@@ -262,9 +299,9 @@ export const OperatorTablePage = () => {
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="flex h-full min-h-0">
-        {/* Left side - Main Content (operator table) */}
-        <div className={`flex flex-col transition-all duration-300 ease-out min-h-0 ${
+      <div className="flex h-full min-h-0 overflow-hidden">
+        {/* Left side - Main Content (operator table) with smoother transitions */}
+        <div className={`flex flex-col transition-all duration-300 ease-in-out min-h-0 ${
           selectedOperator ? 'w-2/3' : 'w-full'
         }`}>
           {/* Header with Navigation */}
@@ -296,53 +333,52 @@ export const OperatorTablePage = () => {
           </div>
         </div>
 
-        {/* Right side - Profile Panel (slide in from right with smooth animation) */}
-        {isProfileVisible && selectedOperator && (
-          <div 
-            className={`w-1/3 flex flex-col min-h-0 bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)]  transition-all duration-300 ease-out ${
-              selectedOperator && !isAnimating 
-                ? 'transform translate-x-0 opacity-100' 
-                : 'transform translate-x-full opacity-0'
-            }`}
-            style={{
-              animation: selectedOperator && !isAnimating 
-                ? 'slideInFromRight 0.3s ease-out forwards' 
-                : isAnimating 
-                ? 'slideOutToRight 0.3s ease-in forwards' 
-                : undefined
-            }}
-          >
-            {/* Profile Header - Fixed */}
-            <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] px-4 sm:px-8 py-4 flex-shrink-0 ">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl sm:text-2xl font-bold text-white opacity-0 animate-fadeInUp" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
-                  Profile Info
-                </h2>
-                <button
-                  onClick={handleCloseProfile}
-                  className="text-white hover:text-gray-300 transition-all duration-200 text-2xl leading-none hover:scale-110 hover:rotate-90"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
+        {/* Right side - Profile Panel Wrapper with smooth width animation */}
+        <div 
+          className={`transition-all duration-300 ease-in-out overflow-hidden ${
+            selectedOperator ? 'w-1/3' : 'w-0'
+          }`}
+        >
+          {/* Profile Panel Content */}
+          <div className="w-full h-full flex flex-col min-h-0 bg-[#ffffff00] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)]" style={{ minWidth: '400px' }}>
+            {selectedOperator && (
+              <>
+                {/* Profile Header - Fixed with smoother animation */}
+                <div className="bg-[#ffffff14]  px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl sm:text-2xl font-bold text-white opacity-0 animate-fadeInUp" style={{ animationDelay: '0.05s', animationDuration: '0.8s', animationFillMode: 'forwards' }}>
+                      Profile Info
+                    </h2>
+                    <button
+                      onClick={handleCloseProfile}
+                      className="text-white hover:text-gray-300 transition-all duration-150 text-2xl leading-none hover:scale-110 hover:rotate-90"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
 
-            {/* Profile Content - Scrollable - Full remaining height */}
-            <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6">
-              <div className="space-y-6">
-                <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
-                  <ProfileHeader operator={selectedOperator} />
+                {/* Profile Content - Scrollable with staggered smooth animations */}
+                <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6">
+                  <div className="space-y-6">
+                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.1s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                      <ProfileHeader operator={selectedOperator} />
+                    </div>
+                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.15s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                      <ProfileStats operator={selectedOperator} />
+                    </div>
+                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                      <ProfileActivity operator={selectedOperator} />
+                    </div>
+                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.25s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                      <YesterdayStatsProfile operator={selectedOperator} />
+                    </div>
+                  </div>
                 </div>
-                <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
-                  <ProfileStats operator={selectedOperator} />
-                </div>
-                <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
-                  <ProfileActivity operator={selectedOperator} />
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
