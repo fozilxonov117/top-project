@@ -45,7 +45,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
                 transform: 'translateZ(0)',
               }}
             />
-            <div className="absolute -top-2 -right-2 animate-sparkle" style={{ animationDelay: '0.3s' }}>
+            <div className="absolute -top-2 -right-2" style={{ animationDelay: '0.3s' }}>
               {getRankDisplay()}
             </div>
           </div>
@@ -55,7 +55,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
           </div>
         </div>
         <div className="flex items-center gap-4" style={{ animationDelay: '0.3s' }}>
-          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] transition-all duration-75 hover:shadow-[0px_4px_20px_0px_rgba(0,0,0,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
+          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-300 hover:shadow-[0px_2px_15px_0px_rgba(255,255,255,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
               <div className="text-sm opacity-80">{t('leaderboard')}</div>
               <div className="text-lg font-bold">
@@ -344,7 +344,7 @@ export const OperatorTablePage = () => {
 
         {/* Right side - Profile Panel Wrapper with smooth width animation */}
         <div 
-          className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`transition-all duration-300 ease-in-out overflow-hidden shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)]  ${
             selectedOperator ? 'w-1/3' : 'w-0'
           }`}
         >
@@ -353,7 +353,7 @@ export const OperatorTablePage = () => {
             {selectedOperator && (
               <>
                 {/* Profile Header - Fixed with smoother animation */}
-                <div className="bg-gradient-to-r from-[#ffffff14] to-[#ffffff20] px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent border-b border-white/10">
+                <div className="px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent ">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl sm:text-2xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                       {t('profileInfo')}
