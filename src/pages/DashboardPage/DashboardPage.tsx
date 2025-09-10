@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import type { MonthFilter, Month, OperatorGroup } from 'shared/types';
@@ -14,7 +14,17 @@ export const DashboardPage = () => {
   const [selectedMonth, setSelectedMonth] = useState<Month | undefined>(undefined);
   const [selectedGroup, setSelectedGroup] = useState<OperatorGroup | null>(null);
   const [showTable, setShowTable] = useState(false);
+  const [animateGroups, setAnimateGroups] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Trigger groups animation on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimateGroups(true);
+    }, 300); // Wait for header animation to start first
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFilterChange = (filter: MonthFilter, month?: Month) => {
     setActiveFilter(filter);
@@ -46,12 +56,12 @@ export const DashboardPage = () => {
       }}
     >
       {/* Header - Fixed */}
-      <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] px-4 sm:px-8 py-4 flex-shrink-0">
+      <div className="relative z-50 bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] px-4 sm:px-8 py-4 flex-shrink-0 animate-slideInFromLeft">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-white">{t('topOperators')}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white animate-bounceIn">{t('topOperators')}</h1>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap animation-delay-600">
             <QuarterTabs 
               activeFilter={activeFilter} 
               selectedMonth={selectedMonth}
@@ -80,7 +90,18 @@ export const DashboardPage = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-10 auto-rows-max"
             >
               {mockOperatorGroups.map((group) => (
-                <OperatorGroupComponent key={group.id} group={group} onSeeAll={() => handleSeeAll(group.id)} />
+                <div
+                  key={group.id}
+                  className={`opacity-0 transition-opacity duration-300 ${
+                    animateGroups ? 'animate-modernFadeInUp' : ''
+                  }`}
+                >
+                  <OperatorGroupComponent 
+                    group={group} 
+                    onSeeAll={() => handleSeeAll(group.id)}
+                    animationDelay={200}
+                  />
+                </div>
               ))}
             </div>
           ) : (

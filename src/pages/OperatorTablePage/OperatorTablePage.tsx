@@ -8,6 +8,8 @@ import type { Operator } from 'shared/types';
 
 // Profile Components (inline)
 const ProfileHeader = ({ operator }: { operator: Operator }) => {
+  const { t } = useTranslation();
+  
   const getPositionSuffix = (rank: number) => {
     if (rank % 10 === 1 && rank % 100 !== 11) return 'st';
     if (rank % 10 === 2 && rank % 100 !== 12) return 'nd';
@@ -29,35 +31,35 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
   };
 
   return (
-    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4 animate-fadeInUp" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div className="relative">
+          <div className="relative" style={{ animationDelay: '0.1s' }}>
             <img
               src={operator.avatar}
               alt={operator.name}
-              className="w-20 h-20 rounded-full border-4 border-white/20 object-cover"
+              className="w-20 h-20 rounded-full border-4 border-white/20 object-cover transition-all duration-75 hover:border-white/40"
               style={{
                 objectPosition: 'center 20%', // Position to show head properly
                 backfaceVisibility: 'hidden',
                 transform: 'translateZ(0)',
               }}
             />
-            <div className="absolute -top-2 -right-2">
+            <div className="absolute -top-2 -right-2 animate-sparkle" style={{ animationDelay: '0.3s' }}>
               {getRankDisplay()}
             </div>
           </div>
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-white">{operator.name}</h1>
-            <p className="text-white/70 text-sm">ID: {operator.id.padStart(7, '0')}</p>
+          <div className="space-y-2 animate-slideInFromLeft" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-2xl font-bold text-white hover:text-blue-300 transition-colors duration-75">{operator.name}</h1>
+            <p className="text-white/70 text-sm animate-fadeIn" style={{ animationDelay: '0.4s' }}>ID: {operator.id.padStart(7, '0')}</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-[#ffffff21] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] transition-colors rounded-lg px-6 py-3 text-white font-semibold">
+        <div className="flex items-center gap-4" style={{ animationDelay: '0.3s' }}>
+          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] transition-all duration-75 hover:shadow-[0px_4px_20px_0px_rgba(0,0,0,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
-              <div className="text-sm opacity-80">Leaderboard</div>
+              <div className="text-sm opacity-80">{t('leaderboard')}</div>
               <div className="text-lg font-bold">
-                {operator.rank}{getPositionSuffix(operator.rank)} place
+                {operator.rank}{getPositionSuffix(operator.rank)} {t('place')}
               </div>
             </div>
           </div>
@@ -67,30 +69,36 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
   );
 };
 
-const ProfileStats = ({ operator }: { operator: Operator }) => (
-  <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
-    <div className="grid grid-cols-4 gap-6">
-      <div className="text-center">
-        <div className="text-white/70 text-sm font-medium mb-2">Count</div>
-        <div className="text-3xl font-bold text-white">{operator.count}</div>
-      </div>
-      <div className="text-center">
-        <div className="text-white/70 text-sm font-medium mb-2">Monthly Average</div>
-        <div className="text-3xl font-bold text-white">{operator.average}</div>
-      </div>
-      <div className="text-center">
-        <div className="text-white/70 text-sm font-medium mb-2">KPI</div>
-        <div className="text-3xl font-bold text-white">{operator.kpi}</div>
-      </div>
-      <div className="text-center">
-        <div className="text-white/70 text-sm font-medium mb-2">Points</div>
-        <div className="text-3xl font-bold text-white">{operator.points}</div>
+const ProfileStats = ({ operator }: { operator: Operator }) => {
+  const { t } = useTranslation();
+  
+  return (
+    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+      <div className="grid grid-cols-4 gap-6">
+        <div className="text-center group">
+          <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('count')}</div>
+          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-green-400">{operator.count}</div>
+        </div>
+        <div className="text-center group">
+          <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('monthlyAverage')}</div>
+          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-blue-400">{operator.average}</div>
+        </div>
+        <div className="text-center group">
+          <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('kpi')}</div>
+          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-purple-400">{operator.kpi}</div>
+        </div>
+        <div className="text-center group">
+          <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('points')}</div>
+          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-yellow-400">{operator.points}</div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const YesterdayStatsProfile = ({ operator }: { operator: Operator }) => {
+  const { t } = useTranslation();
+  
   // Generate yesterday's stats (compact version for profile panel)
   const generateYesterdayStats = () => {
     const baseCount = operator.count;
@@ -124,25 +132,25 @@ const YesterdayStatsProfile = ({ operator }: { operator: Operator }) => {
   const yesterdayData = generateYesterdayStats();
 
   return (
-    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-4" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
-      <h3 className="text-lg font-bold text-white mb-4">Yesterday's Stats</h3>
+    <div className="bg-gradient-to-br from-[#ffffff05] to-[#ffffff15] rounded-xl shadow-lg p-4 border border-white/10 hover:border-white/30 transition-all duration-75" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+      <h3 className="text-lg font-bold text-white mb-4 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{t('yesterdayStats')}</h3>
       <div className="grid grid-cols-3 gap-4">
         {/* Yesterday's Daily Count */}
-        <div className="text-center">
-          <div className="text-white/70 text-xs font-medium mb-1">Daily Count</div>
-          <div className="text-xl font-bold text-white">{yesterdayData.count}</div>
+        <div className="text-center group">
+          <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('dailyCount')}</div>
+          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-emerald-400">{yesterdayData.count}</div>
         </div>
 
         {/* Yesterday's Daily Average */}
-        <div className="text-center">
-          <div className="text-white/70 text-xs font-medium mb-1">Daily Average</div>
-          <div className="text-xl font-bold text-white">{yesterdayData.average}</div>
+        <div className="text-center group">
+          <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('dailyAverage')}</div>
+          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-cyan-400">{yesterdayData.average}</div>
         </div>
 
         {/* Yesterday's KPI */}
-        <div className="text-center">
-          <div className="text-white/70 text-xs font-medium mb-1">KPI</div>
-          <div className="text-xl font-bold text-white">{yesterdayData.kpi}</div>
+        <div className="text-center group">
+          <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('kpi')}</div>
+          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-orange-400">{yesterdayData.kpi}</div>
         </div>
       </div>
     </div>
@@ -150,6 +158,7 @@ const YesterdayStatsProfile = ({ operator }: { operator: Operator }) => {
 };
 
 const ProfileActivity = ({ operator }: { operator: Operator }) => {
+  const { t } = useTranslation();
   const [clickedDay, setClickedDay] = useState<number | null>(null); // Changed from hoveredDay
   
   const getTrend = (): 'up' | 'down' | 'neutral' => {
@@ -194,7 +203,7 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
   const stats = getDailyStats();
 
   return (
-    <div className="bg-[#ffffff00] rounded-xl shadow-lg p-6" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
+    <div className="bg-gradient-to-br from-[#ffffff08] to-[#ffffff18] rounded-xl shadow-lg p-6 border border-white/10 hover:border-white/30 transition-all duration-100 hover:shadow-[0px_8px_25px_0px_rgba(255,255,255,0.15)]" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
       <div className="h-full flex flex-col">
         {/* Stock Chart Area - 70% of space */}
         <div className="w-full flex justify-center items-center overflow-hidden" style={{ height: '80%' }}>
@@ -215,25 +224,25 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
         {/* Daily Statistics Area - 30% of space */}
         <div className="border-t border-white/20 flex-shrink-0" style={{ height: '20%' }}>
           <div className="grid grid-cols-3 gap-6 pt-3 h-full items-center">
-            <div className="text-center">
-              <div className="text-white/70 text-xs font-medium mb-1">
-                Daily Count {stats.isClicked && <span className="text-xs text-green-400">(Day {stats.currentDay})</span>}
+            <div className="text-center group">
+              <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">
+                {t('dailyCount')} {stats.isClicked && <span className="text-xs text-green-400">({t('day')} {stats.currentDay})</span>}
               </div>
-              <div className={`text-xl font-bold transition-colors duration-200 ${stats.isClicked ? 'text-green-400' : 'text-white'}`}>
+              <div className={`text-xl font-bold transition-all duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-emerald-400'}`}>
                 {stats.dailyCount}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-white/70 text-xs font-medium mb-1">
-                Daily Average {stats.isClicked && <span className="text-xs text-green-400">(Day {stats.currentDay})</span>}
+            <div className="text-center group">
+              <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">
+                {t('dailyAverage')} {stats.isClicked && <span className="text-xs text-green-400">({t('day')} {stats.currentDay})</span>}
               </div>
-              <div className={`text-xl font-bold transition-colors duration-200 ${stats.isClicked ? 'text-green-400' : 'text-white'}`}>
+              <div className={`text-xl font-bold transition-all duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-cyan-400'}`}>
                 {stats.dailyAverage}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-white/70 text-xs font-medium mb-1">Monthly KPI</div>
-              <div className="text-xl font-bold text-blue-400">{stats.monthlyKpi}</div>
+            <div className="text-center group">
+              <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">{t('monthlyKPI')}</div>
+              <div className="text-xl font-bold text-blue-400 transition-all duration-100 hover:text-purple-400">{stats.monthlyKpi}</div>
             </div>
           </div>
         </div>
@@ -344,33 +353,33 @@ export const OperatorTablePage = () => {
             {selectedOperator && (
               <>
                 {/* Profile Header - Fixed with smoother animation */}
-                <div className="bg-[#ffffff14]  px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent">
+                <div className="bg-gradient-to-r from-[#ffffff14] to-[#ffffff20] px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent border-b border-white/10">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white opacity-0 animate-fadeInUp" style={{ animationDelay: '0.05s', animationDuration: '0.8s', animationFillMode: 'forwards' }}>
-                      Profile Info
+                    <h2 className="text-xl sm:text-2xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                      {t('profileInfo')}
                     </h2>
                     <button
                       onClick={handleCloseProfile}
-                      className="text-white hover:text-gray-300 transition-all duration-150 text-2xl leading-none hover:scale-110 hover:rotate-90"
+                      className="text-white hover:text-red-400 transition-all duration-300 text-2xl leading-none hover:rotate-90"
                     >
                       ×
                     </button>
                   </div>
                 </div>
 
-                {/* Profile Content - Scrollable with staggered smooth animations */}
-                <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6">
+                {/* Profile Content - Scrollable with simple animations */}
+                <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6 main-content-scroll">
                   <div className="space-y-6">
-                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.1s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                    <div className="transition-all duration-300">
                       <ProfileHeader operator={selectedOperator} />
                     </div>
-                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.15s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                    <div className="transition-all duration-300">
                       <ProfileStats operator={selectedOperator} />
                     </div>
-                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                    <div className="transition-all duration-300">
                       <ProfileActivity operator={selectedOperator} />
                     </div>
-                    <div className="opacity-0 animate-fadeInUp" style={{ animationDelay: '0.25s', animationDuration: '0.4s', animationFillMode: 'forwards' }}>
+                    <div className="transition-all duration-300">
                       <YesterdayStatsProfile operator={selectedOperator} />
                     </div>
                   </div>

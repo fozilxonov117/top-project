@@ -7,9 +7,10 @@ interface OperatorGroupProps {
   group: OperatorGroupType;
   onSeeAll?: () => void;
   className?: string;
+  animationDelay?: number;
 }
 
-export const OperatorGroup = ({ group, onSeeAll, className }: OperatorGroupProps) => {
+export const OperatorGroup = ({ group, onSeeAll, className, animationDelay = 0 }: OperatorGroupProps) => {
   const { t } = useTranslation();
   // Get top 3 operators and sort them for display: 2nd, 1st, 3rd
   const topOperators = group.operators.slice(0, 3);
@@ -21,18 +22,22 @@ export const OperatorGroup = ({ group, onSeeAll, className }: OperatorGroupProps
 
   return (
     <div 
-      className={cn('rounded-lg bg-[#ffffff24] hover:scale-102 transition-transform duration-300 pt-3 pb-3 px-4 rounded-xl shadow-lg hover:shadow-xl cursor-pointer', className)}
+      className={cn(
+        'rounded-lg bg-[#ffffff24] hover:scale-102 transition-all duration-300 ease-out pt-3 pb-3 px-4 rounded-xl shadow-lg hover:shadow-xl cursor-pointer animate-modernFadeInUp',
+        className
+      )}
       onClick={onSeeAll}
       style={{
-        boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px'
+        boxShadow: 'rgb(0 0 0 / 50%) 0px 2px 15px 0px',
+        animationDelay: `${animationDelay}ms`
       }}
     >
       {/* Header */}
       <div className="mb-4 px-3 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">{group.title}</h2>
+        <h2 className="text-lg font-semibold text-white transition-colors duration-300">{group.title}</h2>
         <button
           onClick={onSeeAll}
-          className="text-sm font-medium text-white hover:text-gray-400 transition-colors">
+          className="text-sm font-medium text-white hover:text-gray-400 transition-colors duration-300">
           {t('seeAll')}
         </button>
       </div>

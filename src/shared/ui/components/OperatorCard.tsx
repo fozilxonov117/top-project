@@ -81,13 +81,13 @@ export const OperatorCard = ({ operator, className }: OperatorCardProps) => {
     <div
       className={cn(
         'flex flex-col items-center w-[155px] min-w-[155px] max-w-[155px] group cursor-pointer operator-layout',
-        'transition-all duration-500 ease-out flex-shrink-0 flex-grow-0',
-        'hover:scale-101 hover:-translate-y-2',
+        'transition-all duration-300 ease-out flex-shrink-0 flex-grow-0',
+        'hover:-translate-y-1',
         getVerticalOffset(operator.rank),
         className,
       )}>
       {/* Profile Image - OUTSIDE the border box */}
-      <div className="flex justify-center mb-1.5 transition-transform duration-300 group-hover:scale-110">
+      <div className="flex justify-center mb-1.5 transition-all duration-300">
         <img
           src={operator.avatar}
           alt={operator.name}
@@ -101,7 +101,7 @@ export const OperatorCard = ({ operator, className }: OperatorCardProps) => {
       </div>
 
       {/* Name - OUTSIDE the border box */}
-      <h3 className="text-sm font-semibold text-white text-center mb-2 leading-tight transition-all duration-300 group-hover:text-blue-200 group-hover:scale-105">
+      <h3 className="text-sm font-semibold text-white text-center mb-2 leading-tight transition-all duration-300 group-hover:text-blue-200">
         {operator.name.split(' ').map((name, index) => (
           <div key={index}>{name}</div>
         ))}
@@ -111,38 +111,29 @@ export const OperatorCard = ({ operator, className }: OperatorCardProps) => {
       <div
         className={cn(
           'flex items-center justify-end flex-col gap-1 bg-[#ffffff14] shadow-lg rounded-2xl w-32 p-3 pb-4',
-          'transition-all duration-500 ease-out',
-          'group-hover:shadow-2xl group-hover:bg-[#ffffff20] group-hover:scale-100',
-          'group-hover:rotate-1 group-hover:backdrop-blur-sm',
+          'transition-all duration-300 ease-out',
+          'group-hover:shadow-xl group-hover:bg-[#ffffff20]',
           'relative overflow-hidden',
           getBorderColor(operator.rank),
           getStatsBoxHeight(operator.rank),
         )}>
-        {/* Animated background glow on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-white/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100 rounded-2xl"></div>
-        
-        {/* Floating particles effect */}
-        <div className="absolute top-4 right-4 w-2 h-2 bg-white/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:animate-ping"></div>
-        <div className="absolute top-6 left-6 w-1.5 h-1.5 bg-blue-200/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 group-hover:animate-pulse"></div>
-        <div className="absolute bottom-8 right-6 w-1 h-1 bg-purple-200/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-600 delay-200 group-hover:animate-bounce"></div>
+        {/* Simple background glow on hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-2xl"></div>
 
         {/* Rank Badge */}
-        <div className="flex flex-col items-center relative z-10 transition-transform duration-300 group-hover:scale-110">
-          <span className="text-xs text-white mb-1 transition-all duration-300 group-hover:text-blue-200 group-hover:font-bold">{t('rank')}</span>
-          <div className="transition-transform duration-300 ">
+        <div className="flex flex-col items-center relative z-10 transition-all duration-300">
+          <span className="text-xs text-white mb-1 transition-all duration-300 group-hover:text-blue-200">{t('rank')}</span>
+          <div className="transition-all duration-300">
             <RankBadge rank={operator.rank} />
           </div>
         </div>
 
-        {/* Divider Line */}
-        {/* <div className="h-0.5 w-12 bg-gray-400 my-2"></div> */}
-
         {/* Points */}
-        <div className="flex flex-col items-center relative z-10 transition-transform duration-300 group-hover:scale-101">
-          <span className="text-xs text-white mb-1 transition-all duration-300 group-hover:text-blue-200 group-hover:font-bold">{t('point')}</span>
+        <div className="flex flex-col items-center relative z-10 transition-all duration-300">
+          <span className="text-xs text-white mb-1 transition-all duration-300 group-hover:text-blue-200">{t('point')}</span>
           <div className={cn(
             'text-xs font-bold px-2 py-1 rounded-md transition-all duration-300',
-            'group-hover:scale-110 group-hover:shadow-lg group-hover:animate-pulse',
+            'group-hover:shadow-lg',
             getPointColors(operator.rank)
           )}>
             {formatPoints(operator.points)}

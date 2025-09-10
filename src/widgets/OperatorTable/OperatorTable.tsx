@@ -80,27 +80,27 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
   };
 
   return (
-    <div className={cn('bg-[#ffffff08] backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)]', className)}>
+    <div className={cn('bg-[#ffffff08] backdrop-blur-md rounded-xl border border-white/10 overflow-hidden shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] animate-fadeInScale', className)}>
       {/* Table Header */}
-      <div className="bg-[#ffffff12] border-b border-white/10">
+      <div className="bg-[#ffffff12] border-b border-white/10 animate-tableHeaderPulse">
         <div className="flex px-6 py-2 text-sm font-semibold text-gray-300 bg-[#ffffff05]">
           {/* Left side - Operator Name and Reset Button */}
           <div className="flex-1 flex items-center gap-4">
             <button
               onClick={() => handleSort('name')}
-              className="text-left hover:text-white transition-colors flex items-center gap-1"
+              className="text-left hover:text-white transition-all duration-75 ease-out flex items-center gap-1"
             >
               {t('operator')}
-              <span className="text-xs">{getSortIcon('name')}</span>
+              <span className="text-xs transform transition-transform duration-75">{getSortIcon('name')}</span>
             </button>
             
             {/* Reset Button - Right side of left section */}
             {(sortField !== 'rank' || sortDirection !== 'asc') && (
               <button
                 onClick={resetToDefaultRanking}
-                className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 font-medium"
+                className="text-xs text-blue-400 hover:text-blue-300 transition-all duration-75 ease-out flex items-center gap-1 font-medium animate-bounceIn"
               >
-                <span>↺</span>
+                <span className="animate-rotateIn">↺</span>
                 {t('resetRanking') || 'Reset'}
               </button>
             )}
@@ -119,31 +119,31 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
             </div>
             <button
               onClick={() => handleSort('count')}
-              className="text-center hover:text-white transition-colors flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('count')}
-              <span className="text-xs">{getSortIcon('count')}</span>
+              <span className="text-xs transform transition-transform duration-75">{getSortIcon('count')}</span>
             </button>
             <button
               onClick={() => handleSort('kpi')}
-              className="text-center hover:text-white transition-colors flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('kpi')}
-              <span className="text-xs">{getSortIcon('kpi')}</span>
+              <span className="text-xs transform transition-transform duration-75">{getSortIcon('kpi')}</span>
             </button>
             <button
               onClick={() => handleSort('average')}
-              className="text-center hover:text-white transition-colors flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('average')}
-              <span className="text-xs">{getSortIcon('average')}</span>
+              <span className="text-xs transform transition-transform duration-75">{getSortIcon('average')}</span>
             </button>
             <button
               onClick={() => handleSort('points')}
-              className="text-center hover:text-white transition-colors flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('points')}
-              <span className="text-xs">{getSortIcon('points')}</span>
+              <span className="text-xs transform transition-transform duration-75">{getSortIcon('points')}</span>
             </button>
           </div>
         </div>
@@ -152,13 +152,19 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
       {/* Table Body */}
       <div className="divide-y divide-white/5">
         {sortedOperators.map((operator, index) => (
-          <OperatorRow 
-            key={operator.id} 
-            operator={operator}
-            groupId={groupId}
-            selectedOperatorId={selectedOperatorId}
-            isEven={index % 2 === 0}
-          />
+          <div
+            key={operator.id}
+            className={`animate-slideInFromBottom opacity-0 ${
+              index < 10 ? `animation-delay-${Math.min(index * 100 + 100, 1000)}` : 'animation-delay-1000'
+            }`}
+          >
+            <OperatorRow 
+              operator={operator}
+              groupId={groupId}
+              selectedOperatorId={selectedOperatorId}
+              isEven={index % 2 === 0}
+            />
+          </div>
         ))}
       </div>
     </div>

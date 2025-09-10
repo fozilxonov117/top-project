@@ -87,17 +87,17 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
   return (
     <div 
       className={cn(
-        'flex px-6 py-[11px] hover:bg-[#ffffff08] transition-colors border-b border-white/5 last:border-b-0 cursor-pointer',
+        'flex px-6 py-[11px] hover:bg-gradient-to-r hover:from-[#ffffff08] hover:to-[#ffffff12] transition-all duration-75 ease-out border-b border-white/5 last:border-b-0 cursor-pointer hover:shadow-lg group',
         getRankRowStyle(),
-        isSelected && 'bg-[#ffffff24]'
+        isSelected && 'bg-gradient-to-r from-[#ffffff24] to-[#ffffff18] shadow-lg'
       )}
-      style={isSelected ? { boxShadow: 'rgba(0, 0, 0, 0.5) 0px 2px 15px 0px' } : undefined}
+      style={isSelected ? { boxShadow: 'rgba(0, 0, 0, 0.5) 0px 2px 15px 0px, 0px 0px 20px rgba(255, 255, 255, 0.1)' } : undefined}
       onClick={handleRowClick}
     >
       {/* Left side - Operator Name and Rank Badge/Medal */}
       <div className="flex items-center gap-3 flex-1">
         {/* Rank Circle/Medal */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center transition-all duration-75">
           {getRankDisplay()}
         </div>
         
@@ -105,7 +105,7 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
         <img
           src={operator.avatar}
           alt={operator.name}
-          className="h-12 w-12 rounded-full object-cover operator-avatar border-2 border-white/20"
+          className="h-12 w-12 rounded-full object-cover operator-avatar border-2 border-white/20 transition-all duration-75 group-hover:border-white/40 group-hover:shadow-lg"
           style={{
             objectPosition: 'center 20%', // Position the image to show head properly
             backfaceVisibility: 'hidden',
@@ -114,20 +114,20 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
         />
         
         {/* Operator Name */}
-        <div className="font-medium text-lg text-white">{operator.name}</div>
+        <div className="font-medium text-lg text-white transition-all duration-75 group-hover:text-blue-300">{operator.name}</div>
       </div>
 
       {/* Right side - Medal Count, Stock Chart, Rank Change, and Metrics (separate columns) */}
       <div className="flex gap-8">
         {/* Medal Count Column - Show for operators who EVER reached top-3 in 22 days */}
-        <div className="flex items-center justify-center min-w-[60px]">
+        <div className="flex items-center justify-center min-w-[60px] transition-all duration-75">
           {rankingHistory.everReachedTop3 && (
             <MedalCounter count={rankingHistory.daysInTop3} />
           )}
         </div>
 
         {/* Stock Chart + Trend Indicator Combined Column */}
-        <div className="flex items-center justify-end min-w-[200px] gap-1 relative">
+        <div className="flex items-center justify-end min-w-[200px] gap-1 relative transition-all duration-75">
           <StockChart 
             trend={getStockTrend()} 
             className="" 
@@ -137,7 +137,7 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
           
           {/* Connection line between chart and indicator */}
           <div className={cn(
-            'w-1 h-6 rounded-full opacity-30 transition-all duration-300',
+            'w-1 h-6 rounded-full opacity-30 transition-all duration-75',
             rankMovement.isImprovement ? 'bg-green-400' : 
             rankMovement.isDecline ? 'bg-red-400' : 
             'bg-gray-400'
@@ -147,7 +147,7 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
           <div className="flex items-center justify-center min-w-[40px]">
             {rankMovement.change !== 0 && (
               <div className={cn(
-                'text-sm flex items-center gap-1 font-bold px-2 py-1 rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer',
+                'text-sm flex items-center gap-1 font-bold px-2 py-1 rounded-lg transition-all duration-75 cursor-pointer',
                 rankMovement.isImprovement 
                   ? 'text-green-300 bg-green-500/20 border border-green-500/40 shadow-green-500/20 shadow-md hover:bg-green-500/30' 
                   : 'text-red-300 bg-red-500/20 border border-red-500/40 shadow-red-500/20 shadow-md hover:bg-red-500/30'
@@ -168,23 +168,23 @@ export const OperatorRow = ({ operator, groupId, selectedOperatorId }: OperatorR
         </div>
 
         {/* Count Column */}
-        <div className="flex items-center justify-center min-w-[80px]">
-          <span className="text-white font-medium">{operator.count}</span>
+        <div className="flex items-center justify-center min-w-[80px] transition-all duration-75">
+          <span className="text-white font-medium group-hover:text-blue-300">{operator.count}</span>
         </div>
 
         {/* KPI */}
-        <div className="flex items-center justify-center min-w-[80px]">
-          <span className="text-white font-medium">{operator.kpi}</span>
+        <div className="flex items-center justify-center min-w-[80px] transition-all duration-75">
+          <span className="text-white font-medium group-hover:text-purple-300">{operator.kpi}</span>
         </div>
 
         {/* Average */}
-        <div className="flex items-center justify-center min-w-[80px]">
-          <span className="text-white font-medium">{operator.average}</span>
+        <div className="flex items-center justify-center min-w-[80px] transition-all duration-75">
+          <span className="text-white font-medium group-hover:text-cyan-300">{operator.average}</span>
         </div>
 
         {/* Points */}
-        <div className="flex items-center justify-center min-w-[80px]">
-          <span className="text-green-400 font-bold text-base bg-green-500/20 px-3 py-1 rounded-lg">
+        <div className="flex items-center justify-center min-w-[80px] transition-all duration-75">
+          <span className="text-green-400 font-bold text-base bg-green-500/20 px-3 py-1 rounded-lg transition-all duration-75 group-hover:bg-green-500/30 group-hover:text-green-300 group-hover:shadow-lg">
             {operator.points}
           </span>
         </div>

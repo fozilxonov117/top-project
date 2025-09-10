@@ -270,7 +270,7 @@ export const OperatorProfilePage = () => {
   return (
     <div 
       ref={scrollRef}
-      className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-black"
+      className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-black animate-smoothSlideInProfile"
     >
       <div className="container mx-auto px-4 py-6">
         <div 
@@ -285,23 +285,30 @@ export const OperatorProfilePage = () => {
           {/* Back Button */}
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors mb-6"
+            className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors duration-500 mb-6 animate-smoothFadeInProfile"
+            style={{ animationDelay: '0.3s' }}
           >
             <span className="text-lg">←</span>
             <span className="font-medium">{t('back')}</span>
           </button>
 
           {/* Profile Header */}
-          <ProfileHeader operator={operator} />
+          <div className="animate-smoothFadeInProfile" style={{ animationDelay: '0.6s' }}>
+            <ProfileHeader operator={operator} />
+          </div>
 
           {/* Profile Stats */}
-          <ProfileStats operator={operator} />
+          <div className="animate-smoothFadeInProfile" style={{ animationDelay: '0.9s' }}>
+            <ProfileStats operator={operator} />
+          </div>
 
           {/* Yesterday Stats */}
-          <YesterdayStats operator={operator} />
+          <div className="animate-smoothFadeInProfile" style={{ animationDelay: '1.2s' }}>
+            <YesterdayStats operator={operator} />
+          </div>
 
           {/* Activity Section with Dedicated Profile Stock Chart */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 ">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 animate-smoothFadeInProfile" style={{ animationDelay: '1.5s' }}>
             <h3 className="text-xl font-bold text-white mb-6">Activity Chart</h3>
             <div className="w-full h-[500px]">
               <ProfileStockChart

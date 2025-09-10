@@ -81,7 +81,7 @@ export const QuarterTabs = ({ activeFilter, selectedMonth, onFilterChange, class
       </button>
 
       {/* Month Selector Dropdown */}
-      <div className="relative" ref={dropdownRef}>
+      <div className="relative z-[100]" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className={cn(
@@ -103,7 +103,7 @@ export const QuarterTabs = ({ activeFilter, selectedMonth, onFilterChange, class
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div className="absolute top-full mt-1 right-0 bg-[#ffffff14] backdrop-blur-md rounded-lg shadow-2xl border border-white/20 z-50 min-w-[160px]">
+          <div className="absolute top-full mt-1 right-0 bg-[#ffffff14] backdrop-blur-md rounded-lg shadow-2xl border border-white/20 z-[9999] min-w-[160px]">
             <div className="py-1 max-h-48 overflow-y-auto custom-scrollbar hide-scrollbar-x">
               {months.map((month) => (
                 <button
