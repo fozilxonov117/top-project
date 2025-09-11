@@ -271,6 +271,18 @@ img {
   }
 }
 
+/* Smooth Profile Panel Slide Animation */
+@keyframes smoothSlideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 @keyframes fadeInUp {
   from {
     transform: translateY(20px);
@@ -459,6 +471,10 @@ img {
 
 .animate-smoothFadeInProfile {
   animation: smoothFadeInProfile 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-smoothSlideInFromRight {
+  animation: smoothSlideInFromRight 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .animate-fadeIn {

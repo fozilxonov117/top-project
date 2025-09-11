@@ -270,14 +270,14 @@ export const OperatorProfilePage = () => {
   return (
     <div 
       ref={scrollRef}
-      className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-black animate-smoothSlideInProfile"
+      className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-black animate-smoothSlideInProfile overflow-auto"
     >
       <div className="container mx-auto px-4 py-6">
         <div 
           style={{
             width: '100%',
             maxWidth: '1792px',
-            minWidth: '1200px',
+            minWidth: '1792px',
             margin: '0 auto'
           }}
           className="space-y-6"

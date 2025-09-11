@@ -14,7 +14,7 @@ export const RankBadge = ({ rank, className }: RankBadgeProps) => {
         <div className="transform transition-all duration-300 hover:scale-110 hover:rotate-12">
           {rank === 1 && <GoldMedal size={65} className="drop-shadow-lg" />}
           {rank === 2 && <SilverMedal size={60} className="drop-shadow-lg" />}
-          {rank === 3 && <BronzeMedal size={55} className="drop-shadow-lg" />}
+          {rank === 3 && <BronzeMedal size={55} className="drop-shadow-lg" />}  
         </div>
         
         {/* Optional glow effect */}

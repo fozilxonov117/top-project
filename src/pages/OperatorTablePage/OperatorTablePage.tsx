@@ -55,7 +55,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
           </div>
         </div>
         <div className="flex items-center gap-4" style={{ animationDelay: '0.3s' }}>
-          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-300 hover:shadow-[0px_2px_15px_0px_rgba(255,255,255,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
+          <div className=" shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-300 hover:shadow-[0px_2px_15px_0px_rgba(255,255,255,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
               <div className="text-sm opacity-80">{t('leaderboard')}</div>
               <div className="text-lg font-bold">
@@ -299,95 +299,92 @@ export const OperatorTablePage = () => {
 
   return (
     <div 
-      className="relative h-screen bg-gray-50 flex flex-col overflow-hidden"
+      className="relative h-screen bg-gray-50 flex overflow-hidden"
       style={{
         backgroundImage: "url('/assets/background (1)/255/Background 1 (2).png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        backgroundAttachment: 'fixed',
+        minWidth: '1792px'
       }}
     >
-      <div className="flex h-full min-h-0 overflow-hidden">
-        {/* Left side - Main Content (operator table) with smoother transitions */}
-        <div className={`flex flex-col transition-all duration-300 ease-in-out min-h-0 ${
-          selectedOperator ? 'w-2/3' : 'w-full'
-        }`}>
-          {/* Header with Navigation */}
-          <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] px-4 sm:px-8 py-4 flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+      {/* Main Content Container - Slides left when profile opens */}
+      <div 
+        className={`flex flex-col h-full transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
+          selectedOperator ? 'w-2/3 transform -translate-x-0' : 'w-full'
+        }`}
+      >
+        {/* Fixed Header */}
+        <div className="bg-[#ffffff14] shadow-[0px_2px_15px_0px_rgba(0,0,0,0.5)] px-4 sm:px-8 py-4 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/')}
+                className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+              >
+                <span className="text-lg">←</span>
+                <span className="font-medium">{t('back')}</span>
+              </button>
+              <div className="h-6 w-px bg-white/20" />
+              <h1 className="text-xl sm:text-2xl font-bold text-white">
+                {t('operators')} - {group.title}
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        {/* Table Content */}
+        <div className="flex-1 overflow-auto px-4 sm:px-8 py-6">
+          <OperatorTable 
+            operators={group.operators} 
+            groupId={groupId} 
+            selectedOperatorId={selectedOperator?.id}
+          />
+        </div>
+      </div>
+
+      {/* Profile Panel - Slides in from right, pushes content left */}
+      <div 
+        className={`h-full bg-[#ffffff00] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
+          selectedOperator ? 'w-1/3 translate-x-0' : 'w-0 translate-x-full'
+        }`}
+        style={{ minWidth: selectedOperator ? '400px' : '0px' }}
+      >
+        {selectedOperator && (
+          <div className="w-full h-full flex flex-col animate-smoothSlideInFromRight">
+            {/* Profile Header */}
+            <div className="px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl sm:text-2xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  {t('profileInfo')}
+                </h2>
                 <button
-                  onClick={() => navigate('/')}
-                  className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+                  onClick={handleCloseProfile}
+                  className="text-white hover:text-red-400 transition-all duration-500 cubic-bezier(0.23, 1, 0.32, 1) text-2xl leading-none hover:rotate-90 hover:scale-110"
                 >
-                  <span className="text-lg">←</span>
-                  <span className="font-medium">{t('back')}</span>
+                  ×
                 </button>
-                <div className="h-6 w-px bg-white/20" />
-                <h1 className="text-xl sm:text-2xl font-bold text-white">
-                  {t('operators')} - {group.title}
-                </h1>
+              </div>
+            </div>
+
+            {/* Profile Content */}
+            <div className="flex-1 px-4 sm:px-8 py-6 space-y-6 overflow-hidden">
+              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+                <ProfileHeader operator={selectedOperator} />
+              </div>
+              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+                <ProfileStats operator={selectedOperator} />
+              </div>
+              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+                <ProfileActivity operator={selectedOperator} />
+              </div>
+              <div className="transition-all duration-300">
+                <YesterdayStatsProfile operator={selectedOperator} />
               </div>
             </div>
           </div>
-
-          {/* Table Content - Scrollable - Full remaining height */}
-          <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6">
-            <OperatorTable 
-              operators={group.operators} 
-              groupId={groupId} 
-              selectedOperatorId={selectedOperator?.id}
-            />
-          </div>
-        </div>
-
-        {/* Right side - Profile Panel Wrapper with smooth width animation */}
-        <div 
-          className={`transition-all duration-300 ease-in-out overflow-hidden shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)]  ${
-            selectedOperator ? 'w-1/3' : 'w-0'
-          }`}
-        >
-          {/* Profile Panel Content */}
-          <div className="w-full h-full flex flex-col min-h-0 bg-[#ffffff00] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)]" style={{ minWidth: '400px' }}>
-            {selectedOperator && (
-              <>
-                {/* Profile Header - Fixed with smoother animation */}
-                <div className="px-4 sm:px-8 py-4 flex-shrink-0 bg-transparent ">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                      {t('profileInfo')}
-                    </h2>
-                    <button
-                      onClick={handleCloseProfile}
-                      className="text-white hover:text-red-400 transition-all duration-300 text-2xl leading-none hover:rotate-90"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-
-                {/* Profile Content - Scrollable with simple animations */}
-                <div className="flex-1 min-h-0 overflow-auto px-4 sm:px-8 py-6 main-content-scroll">
-                  <div className="space-y-6">
-                    <div className="transition-all duration-300">
-                      <ProfileHeader operator={selectedOperator} />
-                    </div>
-                    <div className="transition-all duration-300">
-                      <ProfileStats operator={selectedOperator} />
-                    </div>
-                    <div className="transition-all duration-300">
-                      <ProfileActivity operator={selectedOperator} />
-                    </div>
-                    <div className="transition-all duration-300">
-                      <YesterdayStatsProfile operator={selectedOperator} />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
