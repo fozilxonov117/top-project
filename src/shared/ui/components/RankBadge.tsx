@@ -11,7 +11,7 @@ export const RankBadge = ({ rank, className }: RankBadgeProps) => {
   if (rank <= 3) {
     return (
       <div className={cn('relative flex items-center justify-center', className)}>
-        <div className="transform transition-all duration-300 hover:scale-110 hover:rotate-12">
+        <div className="transform transition-[transform,scale] duration-300 hover:scale-110 hover:rotate-12">
           {rank === 1 && <GoldMedal size={65} className="drop-shadow-lg" />}
           {rank === 2 && <SilverMedal size={60} className="drop-shadow-lg" />}
           {rank === 3 && <BronzeMedal size={55} className="drop-shadow-lg" />}  
@@ -36,7 +36,7 @@ export const RankBadge = ({ rank, className }: RankBadgeProps) => {
         'bg-gradient-to-br from-indigo-500 to-indigo-700',
         'border-2 border-indigo-400 shadow-lg shadow-indigo-500/30',
         'text-white font-bold text-sm',
-        'transform transition-all duration-200 hover:scale-105',
+        'transform transition-[transform,scale] duration-200 hover:scale-105',
         className
       )}
     >

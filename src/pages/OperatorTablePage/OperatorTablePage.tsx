@@ -38,7 +38,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
             <img
               src={operator.avatar}
               alt={operator.name}
-              className="w-20 h-20 rounded-full border-4 border-white/20 object-cover transition-all duration-75 hover:border-white/40"
+              className="w-20 h-20 rounded-full border-4 border-white/20 object-cover transition-[border-color] duration-75 hover:border-white/40"
               style={{
                 objectPosition: 'center 20%', // Position to show head properly
                 backfaceVisibility: 'hidden',
@@ -55,7 +55,7 @@ const ProfileHeader = ({ operator }: { operator: Operator }) => {
           </div>
         </div>
         <div className="flex items-center gap-4" style={{ animationDelay: '0.3s' }}>
-          <div className=" shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-300 hover:shadow-[0px_2px_15px_0px_rgba(255,255,255,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
+          <div className=" shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-shadow duration-300 hover:shadow-[0px_2px_15px_0px_rgba(255,255,255,0.7)] rounded-lg px-6 py-3 text-white font-semibold">
             <div className="text-center">
               <div className="text-sm opacity-80">{t('leaderboard')}</div>
               <div className="text-lg font-bold">
@@ -77,19 +77,19 @@ const ProfileStats = ({ operator }: { operator: Operator }) => {
       <div className="grid grid-cols-4 gap-6">
         <div className="text-center group">
           <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('count')}</div>
-          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-green-400">{operator.count}</div>
+          <div className="text-3xl font-bold text-white transition-colors duration-150 group-hover:text-green-400">{operator.count}</div>
         </div>
         <div className="text-center group">
           <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('monthlyAverage')}</div>
-          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-blue-400">{operator.average}</div>
+          <div className="text-3xl font-bold text-white transition-colors duration-150 group-hover:text-blue-400">{operator.average}</div>
         </div>
         <div className="text-center group">
           <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('kpi')}</div>
-          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-purple-400">{operator.kpi}</div>
+          <div className="text-3xl font-bold text-white transition-colors duration-150 group-hover:text-purple-400">{operator.kpi}</div>
         </div>
         <div className="text-center group">
           <div className="text-white/70 text-sm font-medium mb-2 group-hover:text-white transition-colors duration-150">{t('points')}</div>
-          <div className="text-3xl font-bold text-white transition-all duration-150 group-hover:text-yellow-400">{operator.points}</div>
+          <div className="text-3xl font-bold text-white transition-colors duration-150 group-hover:text-yellow-400">{operator.points}</div>
         </div>
       </div>
     </div>
@@ -132,25 +132,25 @@ const YesterdayStatsProfile = ({ operator }: { operator: Operator }) => {
   const yesterdayData = generateYesterdayStats();
 
   return (
-    <div className="bg-gradient-to-br from-[#ffffff05] to-[#ffffff15] rounded-xl shadow-lg p-4 border border-white/10 hover:border-white/30 transition-all duration-75" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
+    <div className="bg-gradient-to-br from-[#ffffff05] to-[#ffffff15] rounded-xl shadow-lg p-4 border border-white/10 hover:border-white/30 transition-[border-color] duration-75" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px' }}>
       <h3 className="text-lg font-bold text-white mb-4 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{t('yesterdayStats')}</h3>
       <div className="grid grid-cols-3 gap-4">
         {/* Yesterday's Daily Count */}
         <div className="text-center group">
           <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('dailyCount')}</div>
-          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-emerald-400">{yesterdayData.count}</div>
+          <div className="text-xl font-bold text-white transition-colors duration-150 group-hover:text-emerald-400">{yesterdayData.count}</div>
         </div>
 
         {/* Yesterday's Daily Average */}
         <div className="text-center group">
           <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('dailyAverage')}</div>
-          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-cyan-400">{yesterdayData.average}</div>
+          <div className="text-xl font-bold text-white transition-colors duration-150 group-hover:text-cyan-400">{yesterdayData.average}</div>
         </div>
 
         {/* Yesterday's KPI */}
         <div className="text-center group">
           <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-150">{t('kpi')}</div>
-          <div className="text-xl font-bold text-white transition-all duration-150 group-hover:text-orange-400">{yesterdayData.kpi}</div>
+          <div className="text-xl font-bold text-white transition-colors duration-150 group-hover:text-orange-400">{yesterdayData.kpi}</div>
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
   const stats = getDailyStats();
 
   return (
-    <div className="bg-gradient-to-br from-[#ffffff08] to-[#ffffff18] rounded-xl shadow-lg p-6 border border-white/10 hover:border-white/30 transition-all duration-100 hover:shadow-[0px_8px_25px_0px_rgba(255,255,255,0.15)]" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
+    <div className="bg-gradient-to-br from-[#ffffff08] to-[#ffffff18] rounded-xl shadow-lg p-6 border border-white/10 hover:border-white/30 transition-[border-color,box-shadow] duration-100 hover:shadow-[0px_8px_25px_0px_rgba(255,255,255,0.15)]" style={{ boxShadow: 'rgb(255 255 255 / 50%) 0px 2px 15px 0px, inset rgba(0, 0, 0, 0.5) 0px 2px 15px 0px', height: '400px' }}>
       <div className="h-full flex flex-col">
         {/* Stock Chart Area - 70% of space */}
         <div className="w-full flex justify-center items-center overflow-hidden" style={{ height: '80%' }}>
@@ -228,7 +228,7 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
               <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">
                 {t('dailyCount')} {stats.isClicked && <span className="text-xs text-green-400">({t('day')} {stats.currentDay})</span>}
               </div>
-              <div className={`text-xl font-bold transition-all duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-emerald-400'}`}>
+              <div className={`text-xl font-bold transition-colors duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-emerald-400'}`}>
                 {stats.dailyCount}
               </div>
             </div>
@@ -236,13 +236,13 @@ const ProfileActivity = ({ operator }: { operator: Operator }) => {
               <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">
                 {t('dailyAverage')} {stats.isClicked && <span className="text-xs text-green-400">({t('day')} {stats.currentDay})</span>}
               </div>
-              <div className={`text-xl font-bold transition-all duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-cyan-400'}`}>
+              <div className={`text-xl font-bold transition-colors duration-100 ${stats.isClicked ? 'text-green-400' : 'text-white hover:text-cyan-400'}`}>
                 {stats.dailyAverage}
               </div>
             </div>
             <div className="text-center group">
               <div className="text-white/70 text-xs font-medium mb-1 group-hover:text-white transition-colors duration-300">{t('monthlyKPI')}</div>
-              <div className="text-xl font-bold text-blue-400 transition-all duration-100 hover:text-purple-400">{stats.monthlyKpi}</div>
+              <div className="text-xl font-bold text-blue-400 transition-colors duration-100 hover:text-purple-400">{stats.monthlyKpi}</div>
             </div>
           </div>
         </div>
@@ -311,7 +311,7 @@ export const OperatorTablePage = () => {
     >
       {/* Main Content Container - Slides left when profile opens */}
       <div 
-        className={`flex flex-col h-full transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
+        className={`flex flex-col h-full transition-[width,transform] duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
           selectedOperator ? 'w-2/3 transform -translate-x-0' : 'w-full'
         }`}
       >
@@ -346,7 +346,7 @@ export const OperatorTablePage = () => {
 
       {/* Profile Panel - Slides in from right, pushes content left */}
       <div 
-        className={`h-full bg-[#ffffff00] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-all duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
+        className={`h-full bg-[#ffffff00] shadow-[0px_2px_15px_0px_rgba(255,255,255,0.5)] transition-[width,transform] duration-700 cubic-bezier(0.23, 1, 0.32, 1) ${
           selectedOperator ? 'w-1/3 translate-x-0' : 'w-0 translate-x-full'
         }`}
         style={{ minWidth: selectedOperator ? '400px' : '0px' }}
@@ -361,7 +361,7 @@ export const OperatorTablePage = () => {
                 </h2>
                 <button
                   onClick={handleCloseProfile}
-                  className="text-white hover:text-red-400 transition-all duration-500 cubic-bezier(0.23, 1, 0.32, 1) text-2xl leading-none hover:rotate-90 hover:scale-110"
+                  className="text-white hover:text-red-400 transition-[color,transform] duration-500 cubic-bezier(0.23, 1, 0.32, 1) text-2xl leading-none hover:rotate-90 hover:scale-110"
                 >
                   ×
                 </button>
@@ -370,16 +370,16 @@ export const OperatorTablePage = () => {
 
             {/* Profile Content */}
             <div className="flex-1 px-4 sm:px-8 py-6 space-y-6 overflow-hidden">
-              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+              <div className="transition-transform duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
                 <ProfileHeader operator={selectedOperator} />
               </div>
-              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+              <div className="transition-transform duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
                 <ProfileStats operator={selectedOperator} />
               </div>
-              <div className="transition-all duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
+              <div className="transition-transform duration-600 cubic-bezier(0.23, 1, 0.32, 1) transform hover:scale-[1.02]">
                 <ProfileActivity operator={selectedOperator} />
               </div>
-              <div className="transition-all duration-300">
+              <div className="transition-transform duration-300">
                 <YesterdayStatsProfile operator={selectedOperator} />
               </div>
             </div>

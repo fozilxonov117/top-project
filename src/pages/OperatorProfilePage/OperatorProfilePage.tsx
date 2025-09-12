@@ -174,7 +174,7 @@ const ProfileStockChart = ({ trend, className, currentRank = 5, previousRank = 8
             fill={clickedDay === point.day ? "#fbbf24" : point.color}
             stroke="#ffffff"
             strokeWidth="2"
-            className="cursor-pointer hover:r-8 transition-all duration-200 drop-shadow-lg"
+            className="cursor-pointer hover:r-8 transition-[r,filter] duration-200 drop-shadow-lg"
             onClick={() => handlePointClick(point)}
           >
             <animate

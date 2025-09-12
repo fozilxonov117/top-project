@@ -88,7 +88,7 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
           <div className="flex-1 flex items-center gap-4">
             <button
               onClick={() => handleSort('name')}
-              className="text-left hover:text-white transition-all duration-75 ease-out flex items-center gap-1"
+              className="text-left hover:text-white transition-colors duration-75 ease-out flex items-center gap-1"
             >
               {t('operator')}
               <span className="text-xs transform transition-transform duration-75">{getSortIcon('name')}</span>
@@ -98,7 +98,7 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
             {(sortField !== 'rank' || sortDirection !== 'asc') && (
               <button
                 onClick={resetToDefaultRanking}
-                className="text-xs text-blue-400 hover:text-blue-300 transition-all duration-75 ease-out flex items-center gap-1 font-medium animate-bounceIn"
+                className="text-xs text-blue-400 hover:text-blue-300 transition-colors duration-75 ease-out flex items-center gap-1 font-medium animate-bounceIn"
               >
                 <span className="animate-rotateIn">↺</span>
                 {t('resetRanking') || 'Reset'}
@@ -119,28 +119,28 @@ export const OperatorTable = ({ operators, groupId, selectedOperatorId, classNam
             </div>
             <button
               onClick={() => handleSort('count')}
-              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-colors duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('count')}
               <span className="text-xs transform transition-transform duration-75">{getSortIcon('count')}</span>
             </button>
             <button
               onClick={() => handleSort('kpi')}
-              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-colors duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('kpi')}
               <span className="text-xs transform transition-transform duration-75">{getSortIcon('kpi')}</span>
             </button>
             <button
               onClick={() => handleSort('average')}
-              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-colors duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('average')}
               <span className="text-xs transform transition-transform duration-75">{getSortIcon('average')}</span>
             </button>
             <button
               onClick={() => handleSort('points')}
-              className="text-center hover:text-white transition-all duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
+              className="text-center hover:text-white transition-colors duration-75 ease-out flex items-center justify-center gap-1 min-w-[80px]"
             >
               {t('points')}
               <span className="text-xs transform transition-transform duration-75">{getSortIcon('points')}</span>

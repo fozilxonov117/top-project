@@ -103,7 +103,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
     <div className={cn('flex items-center justify-center relative group', className)}>
       <div 
         className={cn(
-          'bg-gradient-to-br from-gray-900/95 via-slate-900/95 to-black/95 backdrop-blur-2xl rounded-2xl p-6 border-2 transition-all duration-700 shadow-2xl overflow-hidden relative',
+          'bg-gradient-to-br from-gray-900/95 via-slate-900/95 to-black/95 backdrop-blur-2xl rounded-2xl p-6 border-2 transition-[border-color,box-shadow,transform] duration-700 shadow-2xl overflow-hidden relative',
           'hover:shadow-4xl hover:scale-[1.01] transform-gpu',
           trend === 'up' ? 'border-emerald-500/40 shadow-emerald-500/20 hover:border-emerald-400/60' :
           trend === 'down' ? 'border-red-500/40 shadow-red-500/20 hover:border-red-400/60' :
@@ -246,7 +246,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                 strokeLinejoin="round"
                 opacity="0.9"
                 filter="url(#cryptoGlow)"
-                className="transition-all duration-500 hover:opacity-100 hover:stroke-width-5"
+                className="transition-[opacity,stroke-width] duration-500 hover:opacity-100 hover:stroke-width-5"
               />
             );
           })}
@@ -285,7 +285,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                 strokeWidth="0.5"
                 opacity="0.7"
                 filter="url(#cryptoGlow)"
-                className="hover:opacity-100 hover:r-3 transition-all duration-300 pointer-events-none"
+                className="hover:opacity-100 hover:r-3 transition-[opacity,r] duration-300 pointer-events-none"
               />
               
               {/* Crypto-style pulse ring on hover */}
@@ -297,7 +297,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                 stroke={point.color}
                 strokeWidth="1"
                 opacity="0"
-                className="hover:opacity-40 transition-all duration-300 pointer-events-none"
+                className="hover:opacity-40 transition-opacity duration-300 pointer-events-none"
               >
                 <animate
                   attributeName="r"

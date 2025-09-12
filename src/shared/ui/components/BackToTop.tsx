@@ -38,7 +38,7 @@ export const BackToTop = ({ targetRef, className }: BackToTopProps) => {
       onClick={scrollToTop}
       className={cn(
         'fixed bottom-8 right-8 z-50 p-3 rounded-full bg-[#ffffff20] backdrop-blur-md',
-        'text-white hover:bg-[#ffffff35] transition-all duration-500 shadow-lg',
+        'text-white hover:bg-[#ffffff35] transition-[background-color,transform,box-shadow,border-color] duration-500 shadow-lg',
         'hover:scale-125 hover:shadow-2xl border border-white/20 hover:border-blue-400/50',
         'hover:rotate-12 active:scale-110 active:rotate-6',
         'animate-float hover:animate-glow group relative overflow-hidden',
@@ -52,8 +52,8 @@ export const BackToTop = ({ targetRef, className }: BackToTopProps) => {
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full animate-gradientShift"></div>
       
       {/* Sparkle particles */}
-      <div className="absolute top-1 right-1 w-1 h-1 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-sparkle"></div>
-      <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-blue-300/70 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-400 delay-100 animate-pulse"></div>
+      <div className="absolute top-1 right-1 w-1 h-1 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-sparkle"></div>
+      <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-blue-300/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-400 delay-100 animate-pulse"></div>
       
       <svg 
         className="w-5 h-5 relative z-10 transform transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5" 
@@ -66,7 +66,7 @@ export const BackToTop = ({ targetRef, className }: BackToTopProps) => {
           strokeLinejoin="round" 
           strokeWidth={2} 
           d="M5 10l7-7m0 0l7 7m-7-7v18"
-          className="transition-all duration-300 group-hover:stroke-blue-200"
+          className="transition-[stroke] duration-300 group-hover:stroke-blue-200"
         />
       </svg>
     </button>

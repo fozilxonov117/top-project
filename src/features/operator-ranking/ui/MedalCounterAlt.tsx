@@ -17,7 +17,7 @@ export const MedalCounterAlt = ({ count, className }: MedalCounterAltProps) => {
           'flex items-center gap-1.5 px-3 py-1.5 rounded-full',
           'bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600',
           'shadow-lg border border-amber-300/50',
-          'transition-all duration-300 transform',
+          'transition-[transform,scale,background-color,box-shadow] duration-300 transform',
           'group-hover:scale-105 group-hover:shadow-xl',
           'group-hover:from-amber-300 group-hover:via-yellow-400 group-hover:to-amber-500',
           'relative overflow-hidden'
@@ -46,8 +46,8 @@ export const MedalCounterAlt = ({ count, className }: MedalCounterAltProps) => {
           </span>
           
           {/* Sparkle effects */}
-          <div className="absolute top-0 right-1 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:animate-ping"></div>
-          <div className="absolute bottom-1 left-2 w-0.5 h-0.5 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 group-hover:animate-pulse"></div>
+          <div className="absolute top-0 right-1 w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:animate-ping"></div>
+          <div className="absolute bottom-1 left-2 w-0.5 h-0.5 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 group-hover:animate-pulse"></div>
         </div>
         
         {/* Outer glow ring */}

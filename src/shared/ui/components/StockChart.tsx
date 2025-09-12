@@ -144,7 +144,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
           'overflow-hidden relative',
           chartStyles.borderRadiusClass,
           chartStyles.borderClass,
-          fullSize ? 'w-full  h-full  flex items-center justify-center min-h-[300px]' : 'p-2.5 transition-all  duration-500 transform-gpu',
+          fullSize ? 'w-full  h-full  flex items-center justify-center min-h-[300px]' : 'p-2.5 transition-[border-color,transform]  duration-500 transform-gpu',
           !fullSize && (trend === 'up' ? 'hover:border-emerald-400/30' :
           trend === 'down' ? 'hover:border-red-400/30' :
           'hover:border-cyan-400/30')
@@ -404,7 +404,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
             strokeLinejoin="round"
             opacity="0.9"
             filter="url(#cryptoGlow)"
-            className="transition-all duration-300"
+            className="transition-[stroke,opacity] duration-300"
           />
           
           {/* Approach 2: Moderately squared red overlay curves for deteriorating trends */}
@@ -447,7 +447,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                   strokeLinejoin="round"
                   opacity="0.95"
                   filter="url(#cryptoGlow)"
-                  className="transition-all duration-300"
+                  className="transition-[stroke,opacity] duration-300"
                 />
               );
             }
@@ -488,7 +488,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                 strokeWidth="0.5"
                 opacity="0.9"
                 filter="url(#cryptoGlow)"
-                className={fullSize ? "pointer-events-none" : "hover:opacity-100 hover:r-1.5 transition-all duration-200 pointer-events-none"}
+                className={fullSize ? "pointer-events-none" : "hover:opacity-100 hover:r-1.5 transition-[opacity,r] duration-200 pointer-events-none"}
               />
               
               {/* Subtle hover ring - only for table usage */}
@@ -501,7 +501,7 @@ export const StockChart = ({ trend, className, currentRank = 5, previousRank = 8
                   stroke={point.color}
                   strokeWidth="0.5"
                   opacity="0"
-                  className="hover:opacity-40 transition-all duration-200 pointer-events-none"
+                  className="hover:opacity-40 transition-opacity duration-200 pointer-events-none"
                 >
                   <animate
                     attributeName="r"

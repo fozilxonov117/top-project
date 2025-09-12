@@ -16,11 +16,11 @@ export const MedalCounter = ({ count, className }: MedalCounterProps) => {
       {/* Golden Star Badge with TOP text - similar to reference image */}
       <div className="relative">
         {/* Star shape background */}
-        <div className="relative flex items-center justify-center w-6 h-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+        <div className="relative flex items-center justify-center w-6 h-6 transition-[transform,scale] duration-300 group-hover:scale-110 group-hover:rotate-12">
           {/* Star SVG */}
           <svg 
             viewBox="0 0 24 24" 
-            className="w-6 h-8 text-yellow-400 drop-shadow-lg transition-all duration-300 group-hover:text-yellow-300"
+            className="w-6 h-8 text-yellow-400 drop-shadow-lg transition-colors duration-300 group-hover:text-yellow-300"
             fill="currentColor"
           >
             <path d="M12 2L15.09 8.26L22 9L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9L8.91 8.26L12 2Z" />
@@ -45,7 +45,7 @@ export const MedalCounter = ({ count, className }: MedalCounterProps) => {
       <div className="relative">
         <div className={cn(
           'flex items-center justify-center text-white text-base font-bold',
-          'transition-all duration-300 transform min-w-[22px] h-6',
+          'transition-[transform,scale,color] duration-300 transform min-w-[22px] h-6',
           'group-hover:scale-110 group-hover:text-yellow-300',
           'relative overflow-hidden drop-shadow-lg'
         )}>
@@ -59,8 +59,8 @@ export const MedalCounter = ({ count, className }: MedalCounterProps) => {
         </div>
         
         {/* Floating particles effect */}
-        <div className="absolute -top-1 -right-1 w-1 h-1 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:animate-ping delay-100"></div>
-        <div className="absolute -bottom-1 -left-1 w-0.5 h-0.5 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 group-hover:animate-bounce delay-200"></div>
+        <div className="absolute -top-1 -right-1 w-1 h-1 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 group-hover:animate-ping delay-100"></div>
+        <div className="absolute -bottom-1 -left-1 w-0.5 h-0.5 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-bounce delay-200"></div>
       </div>
     </div>
   );

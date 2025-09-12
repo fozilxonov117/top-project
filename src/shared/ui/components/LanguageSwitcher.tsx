@@ -41,7 +41,7 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className={cn(
-          'flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300',
+          'flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-[background-color,transform,box-shadow,border-color] duration-300',
           'bg-[#ffffff14] backdrop-blur-md text-white hover:bg-[#ffffff30] border border-white/20',
           'hover:scale-105 active:scale-95 hover:shadow-lg hover:border-blue-400/30',
           'group relative overflow-hidden'
@@ -54,7 +54,7 @@ export const LanguageSwitcher = ({ className }: LanguageSwitcherProps) => {
         <span className="relative z-10 group-hover:text-blue-200 transition-colors duration-300">{currentLanguage.label}</span>
         <svg 
           className={cn(
-            'w-4 h-4 transition-all duration-500 relative z-10 group-hover:text-blue-300',
+            'w-4 h-4 transition-[transform,color] duration-500 relative z-10 group-hover:text-blue-300',
             isDropdownOpen && 'rotate-180 scale-110'
           )}
           fill="none" 
